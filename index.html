@@ -56,7 +56,7 @@
       z-index: 10; 
     }
     
-    /* --------------------- 모바일 반응형 디자인 (최종) --------------------- */
+    /* --------------------- 모바일 반응형 디자인 (이전과 동일) --------------------- */
     @media (max-width: 768px) {
       .radio-wrapper {
         width: 95vw;
@@ -514,11 +514,11 @@
       stopLoadingAnimation(); 
       
       let dots = 1;
-      const originalTitle = getChannelTitle(pageHistory[pageHistory.length - 1] || 'welcome'); 
+      const loadingTitle = '인증/로드 중'; 
       
       loadingInterval = setInterval(() => {
           let dotString = '.'.repeat(dots);
-          frequencyDisplay.textContent = `📻 [${originalTitle}] ${baseMessage}${dotString}`;
+          frequencyDisplay.textContent = `📻 [${loadingTitle}] ${baseMessage}${dotString}`;
           
           dots++;
           if (dots > 3) {
@@ -553,13 +553,16 @@
   }
 
 
-  // --------------------- 페이지 로드 함수 (이전과 동일) ---------------------
+  // --------------------- 페이지 로드 함수 (수정된 로딩/정지 로직 반영) ---------------------
 
   /**
    * 새로운 콘텐츠를 로드하고 내부 히스토리를 관리합니다.
    */
   function loadContent(page, skipHistory = false) {
     let html = '';
+    
+    // 🔑 수정: 새로운 페이지 로드 전에 로딩 애니메이션을 무조건 중지
+    stopLoadingAnimation(); 
     
     if (!skipHistory) {
         if (pageHistory.length === 0 || pageHistory[pageHistory.length - 1] !== page) {
@@ -816,7 +819,7 @@
             // 🔑 수정 2: writeForm 컨테이너를 확실하게 표시
             storyFormContainer.style.display = 'block'; 
             
-            loadContent('write'); // 히스토리 업데이트 및 페이지 제목 변경 (여기서 주파수 창이 복구됨)
+            loadContent('write'); // 히스토리 업데이트 및 페이지 제목 변경
 
             channelNameDisplay.textContent = `[${currentChannelName}]에 사연을 제출하세요!`;
             frequencyDisplay.textContent = `📻 [${currentChannelName}] 주파수 일치! 사연 제출 준비!`;
@@ -971,7 +974,6 @@
           let tableHtml = `<table class="story-table"><thead><tr><th>날짜</th><th>이름</th><th>사연 (앞 15자)</th><th>URL</th><th>상태</th><th>관리</th></tr></thead><tbody>`;
           
           stories.forEach(story => {
-              // 🔑 오류 수정! statusText, statusClass를 let으로 루프 내에서 선언
               let statusText = story.status;
               let statusClass;
               
