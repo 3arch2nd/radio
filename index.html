@@ -189,7 +189,7 @@
         overflow-y: hidden; 
         position: relative;
         padding: 10px;
-        padding-right: 20px; /* 🔑 수정: 오른쪽 패딩 추가 (잘림 방지) */
+        padding-right: 20px; 
         border-right: 1px solid #ccc; 
     }
     
@@ -243,7 +243,7 @@
 
     #youtubePlayer {
         width: 100%;
-        height: 150px; /* 🔑 수정: 높이 150px로 조정 */
+        height: 150px; /* 높이 150px로 조정 */
         max-height: 100%;
     }
     
@@ -257,13 +257,11 @@
         color: var(--dark-wood); 
         text-align: center; 
         bottom: -100%; 
-        /* 🔑 수정: 애니메이션 속도를 30초로 느리게 조정 */
         animation: scrollUp 30s linear infinite; 
     }
 
     @keyframes scrollUp {
         0% { transform: translateY(0); }
-        /* 🔑 수정: 트랜스폼 높이를 충분히 주어 글자가 완전히 사라지도록 함 */
         100% { transform: translateY(-1000px); } 
     }
 
@@ -287,6 +285,29 @@
       box-sizing: border-box; 
     }
     
+    /* --------------------- 유튜브 검색 결과 스타일 (추가됨) --------------------- */
+    #searchResults {
+        list-style: none;
+        padding: 0;
+        margin-top: 15px;
+        max-height: 150px;
+        overflow-y: auto;
+        border: 1px solid var(--panel-bg);
+        border-radius: 4px;
+        background-color: #fff;
+    }
+    #searchResults li {
+        padding: 8px 10px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: background-color 0.1s;
+        font-size: 0.9em;
+        color: var(--dark-wood);
+    }
+    #searchResults li:hover {
+        background-color: var(--dial-color);
+    }
+
     /* --------------------- 기타 스타일 (이전과 동일) --------------------- */
     .control-panel {
         display: flex;
@@ -780,10 +801,19 @@
                   <label for="storyContent">사연 내용:</label>
                   <textarea id="storyContent" rows="4" placeholder="오늘 친구에게 고마웠던 일을 적어보아요."></textarea>
               </div>
-              <div class="form-group">
-                  <label for="storyUrl">원하는 유튜브 URL 또는 곡 제목/아티스트:</label>
-                  <input type="text" id="storyUrl" placeholder="예: https://youtu.be/..." required>
+              
+              <div class="form-group" style="border-bottom: 1px solid #ddd; padding-bottom: 15px;">
+                  <label for="searchQuery">원하는 곡 검색 (가수, 제목):</label>
+                  <input type="text" id="searchQuery" placeholder="예: 아이유 좋은날" style="margin-bottom: 5px;">
+                  <button type="button" onclick="handleSearch()" style="padding: 8px; font-size: 0.9em; background-color: var(--panel-bg); color: white;">곡 검색</button>
+                  <ul id="searchResults"></ul>
               </div>
+              
+              <div class="form-group">
+                  <label for="storyUrl">선택된 유튜브 URL (또는 직접 입력):</label>
+                  <input type="text" id="storyUrl" placeholder="선택 후 자동 입력됩니다." required>
+              </div>
+
               <button type="submit">사연 제출</button>
             </form>
             <p id="submissionStatus" style="margin-top: 15px; color: green; font-weight: bold;"></p>
@@ -908,6 +938,60 @@
     } 
   }
 
+  // --------------------- YouTube 검색 로직 (새로 추가됨) ---------------------
+  let searchResultsData = [];
+
+  async function handleSearch() {
+      const queryInput = document.getElementById('searchQuery');
+      const query = queryInput.value.trim();
+      const resultsContainer = document.getElementById('searchResults');
+      const storyUrlInput = document.getElementById('storyUrl');
+      
+      if (query.length < 2) {
+          resultsContainer.innerHTML = '<li>검색어를 두 글자 이상 입력해주세요.</li>';
+          return;
+      }
+      
+      resultsContainer.innerHTML = '<li>검색 중입니다...</li>';
+      
+      startLoadingAnimation('YouTube 검색 중');
+
+      const res = await callWorker('searchYoutube', { query: query });
+
+      stopLoadingAnimation();
+
+      if (res.success && res.results.length > 0) {
+          searchResultsData = res.results;
+          displayResults(res.results);
+      } else {
+          resultsContainer.innerHTML = `<li>🐛 검색 결과가 없습니다. URL을 직접 입력하거나 검색어를 다시 시도하세요.</li>`;
+          storyUrlInput.value = ''; // URL 필드 초기화
+      }
+  }
+
+  function displayResults(results) {
+      const resultsContainer = document.getElementById('searchResults');
+      let html = '';
+
+      results.forEach((item, index) => {
+          html += `<li onclick="selectSong(${index})">🎵 ${item.title}</li>`;
+      });
+      
+      resultsContainer.innerHTML = html;
+  }
+
+  function selectSong(index) {
+      const selected = searchResultsData[index];
+      const storyUrlInput = document.getElementById('storyUrl');
+      const resultsContainer = document.getElementById('searchResults');
+      
+      // 사연 제출 폼에 URL 자동 입력
+      storyUrlInput.value = selected.url;
+      
+      // 검색 결과 목록 숨기기
+      resultsContainer.innerHTML = `<li>✅ ${selected.title} 선택 완료!</li>`;
+  }
+  
   // --------------------- BACK (뒤로가기) 기능 (이전과 동일) ---------------------
   function goBack() {
       if (pageHistory.length > 1) {
@@ -960,7 +1044,7 @@
   function setupStoryFormListeners() {
     const pinForm = document.getElementById('pinForm');
     const storyFormContainer = document.getElementById('writeForm');
-    const storyForm = document.getElementById('storyForm'); // 사연 제출 폼 자체
+    const storyForm = document.getElementById('storyForm'); 
     
     pinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -979,15 +1063,10 @@
             currentChannelPin = pin;
             currentChannelName = res.channelName;
             
-            // 🔑 수정 1: PIN 폼을 확실하게 숨김
             pinForm.style.display = 'none'; 
-            
-            // 🔑 수정 2: writeForm 컨테이너를 확실하게 표시
             storyFormContainer.style.display = 'block'; 
             
-            // loadContent('write'); // 🚨🚨 오류의 근본 원인: 재귀적 호출을 제거합니다!
-            
-            // 🔑 수정: 히스토리 상태만 업데이트합니다. (DOM 재로드를 막기 위해 skipHistory=true)
+            // 🔑 수정: 히스토리 상태만 업데이트합니다. (DOM 재로드를 막기 위해)
             pageHistory.push('write');
             history.replaceState({ page: 'write' }, null, '#write');
             frequencyDisplay.textContent = `📻 [${currentChannelName}] 주파수 일치! 사연 제출 준비!`;
@@ -1312,7 +1391,7 @@
       stopLoadingAnimation(); 
 
       if (res.success) {
-          const stories = res.stories; 
+          const stories = res.results; 
           storyData = stories.filter(s => s.youtubeUrl && !s.youtubeUrl.startsWith('Search:'));
           
           if (storyData.length === 0) {
