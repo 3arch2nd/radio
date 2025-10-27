@@ -1433,7 +1433,7 @@
   }
 
 
-  function onYouTubeIframeAPIReady() {
+ function onYouTubeIframeAPIReady() {
       const youtubeBox = document.getElementById('youtubePlayer');
       if (!youtubeBox) {
           console.error("YouTube Player DOM element not found.");
@@ -1443,6 +1443,16 @@
       player = new YT.Player('youtubePlayer', {
           height: '100%',
           width: '100%',
+          // 🔑 변경! playerVars를 추가하여 광고 억제 및 UI 간소화 시도
+          playerVars: {
+              'rel': 0, // 관련 동영상 숨기기
+              'modestbranding': 1, // YouTube 로고 축소
+              'autoplay': 1, // 자동 재생 시도
+              'disablekb': 1, // 키보드 컨트롤 비활성화 (선택 사항)
+              'iv_load_policy': 3, // 동영상 주석 비활성화
+              'showinfo': 0, // 동영상 정보 표시 비활성화
+              'cc_load_policy': 1 // 캡션 표시 시도 (교육용 콘텐츠일 경우 유용)
+          },
           events: {
               'onReady': onPlayerReady,
               'onStateChange': onPlayerStateChange
