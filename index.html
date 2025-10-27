@@ -87,8 +87,8 @@
       
       /* 모바일 전용 다이얼 버튼 그룹 표시 (사연쓰기/사연관리) */
       .dial-button-group {
-          display: flex !important; 
-          order: 2; 
+          display: flex !important; /* 강제로 표시 */
+          order: 2; /* 버튼 그룹은 주파수 창 아래에 배치 */
           width: 100%;
           justify-content: space-around;
           margin-bottom: 10px;
@@ -112,7 +112,7 @@
       
       /* 2. 주파수 영역 (모바일) */
       .frequency-area {
-          order: 1; 
+          order: 1; /* 주파수 창은 가장 위에 배치 (스크린 바로 아래) */
           width: 95%;
           padding: 5px 0;
       }
@@ -971,8 +971,8 @@
           let tableHtml = `<table class="story-table"><thead><tr><th>날짜</th><th>이름</th><th>사연 (앞 15자)</th><th>URL</th><th>상태</th><th>관리</th></tr></thead><tbody>`;
           
           stories.forEach(story => {
-              const contentSnippet = story.content.length > 15 ? story.content.substring(0, 15) + '...' : story.content;
-              const statusText = story.status;
+              // 🔑 오류 수정! statusText, statusClass를 let으로 루프 내에서 선언
+              let statusText = story.status;
               let statusClass;
               
               if (story.isPlayed) {
@@ -982,6 +982,7 @@
                   statusClass = `status-${story.status.toLowerCase()}`;
               }
               
+              const contentSnippet = story.content.length > 15 ? story.content.substring(0, 15) + '...' : story.content;
               const formattedDate = new Date(story.timestamp).toLocaleDateString('ko-KR');
 
               tableHtml += `
@@ -1191,4 +1192,4 @@
   };
 </script>
 </body>
-</html>ㄹ
+</html>
