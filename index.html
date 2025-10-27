@@ -56,7 +56,7 @@
       z-index: 10; 
     }
     
-    /* --------------------- 모바일 반응형 디자인 (최종) --------------------- */
+    /* --------------------- 모바일 반응형 디자인 (이전과 동일) --------------------- */
     @media (max-width: 768px) {
       .radio-wrapper {
         width: 95vw;
@@ -87,8 +87,8 @@
       
       /* 모바일 전용 다이얼 버튼 그룹 표시 (사연쓰기/사연관리) */
       .dial-button-group {
-          display: flex !important; /* 강제로 표시 */
-          order: 2; /* 버튼 그룹은 주파수 창 아래에 배치 */
+          display: flex !important; 
+          order: 2; 
           width: 100%;
           justify-content: space-around;
           margin-bottom: 10px;
@@ -112,7 +112,7 @@
       
       /* 2. 주파수 영역 (모바일) */
       .frequency-area {
-          order: 1; /* 주파수 창은 가장 위에 배치 (스크린 바로 아래) */
+          order: 1; 
           width: 95%;
           padding: 5px 0;
       }
@@ -136,7 +136,6 @@
 
     /* --------------------- PC 레이아웃 (기능성 요소) --------------------- */
     
-    /* PC: 상단 스크린 (메인 콘텐츠 영역) */
     .radio-screen {
       flex: 1; 
       background-color: var(--screen-bg);
@@ -247,7 +246,7 @@
     /* 중앙 하단 버튼 스타일 */
     .center-buttons button {
         padding: 5px 10px;
-        background-color: #C0C0C0; /* 회색 통일 */
+        background-color: #C0C0C0; 
         border: 1px solid #888;
         border-radius: 3px;
         font-size: 0.7em;
@@ -504,7 +503,7 @@
       }
   }
   
-  // --------------------- 동적 로딩 애니메이션 로직 (추가됨) ---------------------
+  // --------------------- 동적 로딩 애니메이션 로직 (이전과 동일) ---------------------
   let loadingInterval;
 
   /**
@@ -515,7 +514,6 @@
       stopLoadingAnimation(); 
       
       let dots = 1;
-      // 현재 페이지 타이틀을 기반으로 로딩 메시지 설정
       const originalTitle = getChannelTitle(pageHistory[pageHistory.length - 1] || 'welcome'); 
       
       loadingInterval = setInterval(() => {
@@ -537,7 +535,6 @@
           clearInterval(loadingInterval);
           loadingInterval = null;
       }
-      // 로딩 중지 후, loadContent가 호출될 때 주파수 창이 복구됩니다.
   }
 
   // --------------------- 팝업 (모달) 관리 기능 (이전과 동일) ---------------------
@@ -794,6 +791,7 @@
   function setupStoryFormListeners() {
     const pinForm = document.getElementById('pinForm');
     const storyFormContainer = document.getElementById('writeForm');
+    const storyForm = document.getElementById('storyForm'); // 사연 제출 폼 자체
     
     pinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -801,34 +799,35 @@
         const channelNameDisplay = document.getElementById('channelNameDisplay');
         const submissionStatus = document.getElementById('submissionStatus');
         
-        // 🔑 변경! 주파수 잡는 중... 동적 로딩 시작
         startLoadingAnimation('PIN 검증 중');
-        submissionStatus.textContent = ''; // 기존 메시지 초기화
+        submissionStatus.textContent = ''; 
         
         const res = await callWorker('getChannelInfoByPin', { pin });
         
-        // 🔑 변경! 로딩 애니메이션 중지
         stopLoadingAnimation(); 
 
         if (res.success) {
             currentChannelPin = pin;
             currentChannelName = res.channelName;
             
-            pinForm.style.display = 'none';
-            // 🔑 수정! storyFormContainer(writeForm) 전체를 보이게 설정
+            // 🔑 수정 1: PIN 폼을 확실하게 숨김
+            pinForm.style.display = 'none'; 
+            
+            // 🔑 수정 2: writeForm 컨테이너를 확실하게 표시
             storyFormContainer.style.display = 'block'; 
             
-            loadContent('write'); 
-            
+            loadContent('write'); // 히스토리 업데이트 및 페이지 제목 변경
+
             channelNameDisplay.textContent = `[${currentChannelName}]에 사연을 제출하세요!`;
             frequencyDisplay.textContent = `📻 [${currentChannelName}] 주파수 일치! 사연 제출 준비!`;
 
             if (isStorySubmitted) {
-                document.getElementById('storyForm').style.display = 'none';
+                // 이미 제출했으면 사연 폼 숨기기
+                storyForm.style.display = 'none';
                 submissionStatus.textContent = '사연은 한 번만 제출할 수 있습니다. 🙏';
             } else {
-                // 🔑 수정! 사연 제출 폼을 명확히 보이게 설정
-                document.getElementById('storyForm').style.display = 'block'; 
+                // 제출하지 않았으면 사연 폼 표시
+                storyForm.style.display = 'block';
                 submissionStatus.textContent = '';
             }
         } else {
@@ -838,7 +837,7 @@
         }
     });
 
-    document.getElementById('storyForm').addEventListener('submit', handleStorySubmit);
+    storyForm.addEventListener('submit', handleStorySubmit);
   }
 
   // --------------------- 사연 제출 로직 (이전과 동일) ---------------------
@@ -872,7 +871,7 @@
     }
   }
   
-  // --------------------- 채널 생성 로직 (수정됨: 팝업 호출) ---------------------
+  // --------------------- 채널 생성 로직 (이전과 동일) ---------------------
   async function handleCreateChannel(e) {
       e.preventDefault();
       const channelName = document.getElementById('channelName').value;
@@ -882,7 +881,6 @@
       
       const pin = Math.floor(100000 + Math.random() * 900000).toString(); 
       
-      // 🔑 변경! 로딩 애니메이션 시작
       startLoadingAnimation('채널 생성 중');
       createStatus.textContent = `✨ 채널 생성 중...`;
       
@@ -893,11 +891,9 @@
           pin
       });
 
-      // 🔑 변경! 로딩 애니메이션 중지
       stopLoadingAnimation(); 
 
       if (res.success) {
-          // 팝업 호출 (채널명 오류 수정됨)
           showModal(
               `${channelName} 채널 생성 완료🎉`,
               res.pin, 
@@ -909,20 +905,18 @@
       }
   }
   
-  // --------------------- 교사 관리 로그인 로직 (수정됨: 로딩 애니메이션) ---------------------
+  // --------------------- 교사 관리 로그인 로직 (이전과 동일) ---------------------
   async function handleManageLogin(e) {
       e.preventDefault();
       const pin = document.getElementById('managerPin').value;
       const password = document.getElementById('managerPassword').value;
       const loginStatus = document.getElementById('manageLoginStatus');
       
-      // 🔑 변경! 로딩 애니메이션 시작
       startLoadingAnimation('로그인 중');
       loginStatus.textContent = '로그인 시도 중...';
       
       const authRes = await callWorker('getAllStories', { pin, password }); 
       
-      // 🔑 변경! 로딩 애니메이션 중지
       stopLoadingAnimation(); 
 
       if (authRes.success || authRes.message.includes('제출된 사연이 없습니다')) { 
@@ -957,14 +951,14 @@
       const storyListArea = document.getElementById('storyListArea');
       storyListArea.innerHTML = `<p>사연 목록을 서버에서 불러오는 중...</p>`;
       
-      startLoadingAnimation('사연 목록 로드 중'); // 로딩 시작
+      startLoadingAnimation('사연 목록 로드 중'); 
 
       const res = await callWorker('getAllStories', { 
           pin: currentChannelPin, 
           password: managerPassword 
       });
       
-      stopLoadingAnimation(); // 로딩 중지
+      stopLoadingAnimation(); 
 
       if (res.success) {
           const stories = res.stories;
@@ -1049,11 +1043,11 @@
       const playerArea = document.getElementById('playerArea');
       playerArea.innerHTML = `<p>승인되고 아직 재생되지 않은 사연을 불러오는 중...</p>`;
       
-      startLoadingAnimation('사연 로드 중'); // 로딩 시작
+      startLoadingAnimation('사연 로드 중'); 
 
       const res = await callWorker('getApprovedStories', { pin: currentChannelPin });
       
-      stopLoadingAnimation(); // 로딩 중지
+      stopLoadingAnimation(); 
 
       if (res.success) {
           const stories = res.stories; 
@@ -1197,4 +1191,4 @@
   };
 </script>
 </body>
-</html>
+</html>ㄹ
