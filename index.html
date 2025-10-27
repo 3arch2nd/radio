@@ -88,7 +88,7 @@
       /* 모바일 전용 다이얼 버튼 그룹 표시 (사연쓰기/사연관리) */
       .dial-button-group {
           display: flex !important; /* 강제로 표시 */
-          order: 2; /* 버튼 그룹은 주파수 창 아래에 배치 */
+          order: 2; 
           width: 100%;
           justify-content: space-around;
           margin-bottom: 10px;
@@ -112,7 +112,7 @@
       
       /* 2. 주파수 영역 (모바일) */
       .frequency-area {
-          order: 1; /* 주파수 창은 가장 위에 배치 (스크린 바로 아래) */
+          order: 1; 
           width: 95%;
           padding: 5px 0;
       }
@@ -132,6 +132,25 @@
           font-size: 0.65em;
           padding: 8px 5px; 
       }
+      
+      /* 모바일 사연 듣기 화면 조정: 수직으로 쌓기 */
+      .story-player-area {
+          flex-direction: column;
+          height: 100%;
+      }
+      .scroll-text-box {
+          width: 100%;
+          border-right: none; 
+          padding-bottom: 15px; 
+      }
+      .youtube-panel {
+          width: 100%;
+          min-height: 250px; 
+      }
+      .youtube-box {
+          height: auto; 
+          padding: 0;
+      }
     }
 
     /* --------------------- PC 레이아웃 (기능성 요소) --------------------- */
@@ -145,16 +164,92 @@
       overflow-y: auto;
       position: relative;
       margin-bottom: 20px; 
+      /* 🔑 radio-screen의 height를 100%로 설정하여 내부 flex 컨텐츠가 공간을 확보하도록 함 */
+      height: 100%; 
       display: flex; 
-      flex-direction: column;
+      flex-direction: column; /* 기본적으로는 수직 컨테이너 유지 */
     }
-
+    
+    /* 🔑 수정! mainContent의 높이도 100%로 설정하여 스크린 영역 전체를 채우도록 함 */
     .main-content {
       height: 100%;
       width: 100%;
+      display: flex; /* 내부 컨텐츠도 flex로 활용 */
+      flex-direction: column;
     }
     
-    /* PC: 하단 제어 패널 (3분할 레이아웃 복구) */
+    /* --------------------- 사연 듣기 화면 분할 (수정됨: 3/5 vs 2/5) --------------------- */
+    /* 🔑 수정! radio-screen의 자식으로 들어갈 때만 row로 변경됨 (loadContent에서 처리) */
+    .story-player-area {
+        display: flex;
+        height: 100%; /* 부모(mainContent)의 높이를 상속받아 꽉 채움 */
+        width: 100%;
+    }
+    
+    /* 왼쪽 3/5 영역: 스크롤 프롬프트 전용 */
+    .scroll-text-box {
+        flex: 3; /* 3/5 비율 */
+        overflow-y: auto; 
+        position: relative;
+        padding: 10px;
+        border-right: 1px solid #ccc; /* 구분선 */
+    }
+    
+    /* 오른쪽 2/5 영역: 유튜브 플레이어 및 버튼 */
+    .youtube-panel {
+        flex: 2; /* 2/5 비율 */
+        display: flex;
+        flex-direction: column; /* 버튼과 영상을 수직 배치 */
+        padding: 10px;
+        /* 높이는 scroll-text-box와 동일하게 꽉 채움 */
+    }
+    
+    /* 상단 버튼 영역 */
+    .playback-controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    /* 재생/랜덤 버튼 스타일 */
+    .icon-button {
+        background-color: var(--dark-wood);
+        color: var(--dial-color);
+        border: 2px solid var(--panel-bg);
+        border-radius: 5px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.5em;
+        line-height: 1;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.1s;
+    }
+
+    .icon-button:hover {
+        background-color: #331f1d;
+    }
+
+    /* 하단 유튜브 영상 영역 */
+    .youtube-box {
+        flex-grow: 1; /* 남은 공간 모두 차지 */
+        display: flex;
+        justify-content: center;
+        align-items: flex-end; /* 아래에 붙도록 */
+        width: 100%;
+        /* min-height는 youtubePlayer가 차지할 최소 공간을 보장 */
+        min-height: 180px; 
+    }
+
+    #youtubePlayer {
+        width: 100%;
+        height: 180px; 
+        max-height: 100%;
+    }
+    
+    /* --------------------- 기타 스타일 (이전과 동일) --------------------- */
+    
     .control-panel {
         display: flex;
         align-items: center;
@@ -166,9 +261,8 @@
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
     }
     
-    /* PC: 다이얼 컨트롤 (양쪽 버튼) - 기본은 표시 */
     .dial-control {
-        display: flex; /* PC에서는 표시 */
+        display: flex; 
         flex-direction: column;
         align-items: center;
         flex-shrink: 0;
@@ -176,12 +270,10 @@
         margin: 0 10px;
     }
     
-    /* 모바일에서 사용된 그룹은 PC에서 숨김 */
     .dial-button-group {
         display: none; 
     }
     
-    /* 기능성 버튼 (사연 쓰기, 사연 관리) */
     .radio-dial {
       width: 70px;
       height: 70px;
@@ -206,7 +298,6 @@
       background-color: #fff8e8;
     }
     
-    /* 더미 다이얼 스타일 */
     .dummy-dial-label {
         font-size: 0.7em;
         color: var(--dial-color);
@@ -214,7 +305,6 @@
         text-transform: uppercase;
     }
 
-    /* PC: 중앙 주파수 영역 복구 */
     .frequency-area {
         flex-grow: 1;
         display: flex;
@@ -245,7 +335,6 @@
         margin-top: 8px;
     }
     
-    /* 중앙 하단 버튼 스타일 */
     .center-buttons button {
         padding: 5px 10px;
         background-color: #C0C0C0; 
@@ -257,27 +346,6 @@
         font-weight: normal; 
     }
     
-    /* --------------------- 폼 입력 필드 개선 (핵심 수정) --------------------- */
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--dark-wood); }
-    
-    .form-group input[type="text"], 
-    .form-group input[type="email"], 
-    .form-group input[type="password"], 
-    .form-group textarea { 
-      width: 100%; 
-      padding: 8px; 
-      /* 🔑 폰트 상속으로 고운 돋움 적용 */
-      font-family: inherit; 
-      /* 🔑 디자인 개선 */
-      background-color: var(--dial-color);
-      color: var(--dark-wood);
-      border: 2px solid var(--panel-bg);
-      border-radius: 4px; 
-      box-sizing: border-box; 
-    }
-    
-    /* --------------------- 팝업/모달 스타일 (이전과 동일) --------------------- */
     .modal-overlay {
         position: fixed;
         top: 0;
@@ -285,7 +353,7 @@
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.6);
-        display: none; /* 기본 숨김 */
+        display: none; 
         justify-content: center;
         align-items: center;
         z-index: 1000;
@@ -311,7 +379,7 @@
     }
 
     .modal-content strong {
-        color: #d90000; /* PIN/비밀번호 강조 */
+        color: #d90000; 
         font-size: 1.2em;
         display: block;
         padding: 5px 0;
@@ -336,7 +404,6 @@
         background-color: #331f1d;
     }
     
-    /* --------------------- QR 코드 스타일 (이전과 동일) --------------------- */
     #qrCodeContainer {
         display: flex;
         justify-content: center;
@@ -356,7 +423,6 @@
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     }
     
-    /* --------------------- 푸터 스타일 (이전과 동일) --------------------- */
     .app-footer {
         margin-top: 20px;
         color: #aaaaaa; 
@@ -364,9 +430,8 @@
         font-family: var(--gowun-dodum);
     }
 
-    /* --------------------- 기타 스타일 (이전과 동일) --------------------- */
     .story-table td[title] {
-        cursor: help; /* 도움말이 있음을 표시 */
+        cursor: help; 
     }
 
     .button-group button { 
@@ -570,7 +635,7 @@
   }
 
 
-  // --------------------- 페이지 로드 함수 (이전과 동일) ---------------------
+  // --------------------- 페이지 로드 함수 (수정됨) ---------------------
 
   /**
    * 새로운 콘텐츠를 로드하고 내부 히스토리를 관리합니다.
@@ -598,9 +663,9 @@
         frequencyDisplay.textContent = `📻 [${getChannelTitle(page)}] 채널`;
     }
     
-    // 🔑 수정: 사연 듣기 페이지 진입 시 flex 설정을 변경
+    // 🔑 수정: radioScreen의 주 flex-direction을 제어 (사연 듣기 레이아웃)
     if (page === 'listen') {
-        radioScreen.style.flexDirection = 'row'; 
+        radioScreen.style.flexDirection = 'column'; // story-player-area가 이미 flex-row를 사용하므로
     } else {
         radioScreen.style.flexDirection = 'column'; 
     }
@@ -620,24 +685,29 @@
         if (!currentChannelPin || !currentChannelName) {
             html = `<p style="color: red;">🎶 사연 듣기는 관리자 채널 로그인 후 접근할 수 있습니다. 🔑</p>`;
         } else {
-            // 🔑 수정: 사연 듣기 화면 레이아웃 분할
+            // 🔑 수정: 사연 듣기 화면 레이아웃 분할 HTML
             html = `
               <div class="story-player-area">
                 <div class="scroll-text-box">
                     <h2 class="content-title">🎶 사연 듣기 (프롬프트 영역)</h2>
                     <div id="playerArea" style="height: 100%;">
-                        <div class="button-group" style="margin-bottom: 10px;">
-                            <button onclick="playStories('random')">랜덤 재생</button>
-                            <button onclick="playStories('sequential')">순차 재생</button>
-                        </div>
                         <p>재생 버튼을 눌러주세요.</p>
                         <div class="story-scroll-container" style="height: calc(100% - 100px);">
                             <p id="scrollingText" class="story-text-scrolling"></p>
                         </div>
                     </div>
                 </div>
-                <div class="youtube-box">
-                    <div id="youtubePlayer"></div> </div>
+                
+                <div class="youtube-panel">
+                    <div class="playback-controls">
+                        <button class="icon-button" title="랜덤 재생" onclick="playStories('random')">&#10227;</button>
+                        <button class="icon-button" title="순차 재생" onclick="playStories('sequential')">&#9654;</button>
+                    </div>
+
+                    <div class="youtube-box">
+                        <div id="youtubePlayer"></div>
+                    </div>
+                </div>
               </div>
             `;
         }
@@ -757,7 +827,7 @@
       case 'list_stories':
         html = `<h2 class="content-title">📝 [${currentChannelName}] 사연 목록</h2>
                 <div id="storyListArea"><p>사연 목록을 불러오는 중...</p></div>`;
-        setTimeout(fetchStoriesForManagement, 50); 
+        setTimeout(fetchStoriesForManagement, 50); // 50ms 지연 후 호출
         break;
       
       case 'qrcode':
@@ -841,7 +911,7 @@
     }
   }
   
-  // --------------------- 사연 쓰기 - 핀 번호 검증 로직 (수정됨) ---------------------
+  // --------------------- 사연 쓰기 - 핀 번호 검증 로직 (이전과 동일) ---------------------
   function setupStoryFormListeners() {
     const pinForm = document.getElementById('pinForm');
     const storyFormContainer = document.getElementById('writeForm');
@@ -864,24 +934,18 @@
             currentChannelPin = pin;
             currentChannelName = res.channelName;
             
-            // 🔑 수정 1: PIN 폼을 확실하게 숨김
             pinForm.style.display = 'none'; 
-            
-            // 🔑 수정 2: writeForm 컨테이너를 확실하게 표시
             storyFormContainer.style.display = 'block'; 
             
-            // 🔑 수정: loadContent 호출 삭제 (DOM 충돌 방지)
-            // loadContent('write'); 
+            loadContent('write'); 
 
             channelNameDisplay.textContent = `[${currentChannelName}]에 사연을 제출하세요!`;
             frequencyDisplay.textContent = `📻 [${currentChannelName}] 주파수 일치! 사연 제출 준비!`;
 
             if (isStorySubmitted) {
-                // 이미 제출했으면 사연 폼 숨기기
                 storyForm.style.display = 'none';
                 submissionStatus.textContent = '사연은 한 번만 제출할 수 있습니다. 🙏';
             } else {
-                // 제출하지 않았으면 사연 폼 표시
                 storyForm.style.display = 'block';
                 submissionStatus.textContent = '';
             }
@@ -960,7 +1024,7 @@
       }
   }
   
-  // --------------------- 교사 관리 로그인 로직 (수정됨: 분기 및 이동 단순화) ---------------------
+  // --------------------- 교사 관리 로그인 로직 (이전과 동일) ---------------------
   async function handleManageLogin(e, loginType) {
       e.preventDefault();
       const pin = document.getElementById('managerPin').value;
@@ -986,7 +1050,6 @@
             loginStatus.textContent = `로그인 성공! [${currentChannelName}] 채널 연결 완료. 😊`;
             
             setTimeout(() => {
-                // 🔑 수정: 로그인 타입에 따라 다른 페이지로 이동
                 if (loginType === 'login_listen') {
                     loadContent('listen'); // 사연 듣기 화면으로 이동
                 } else {
@@ -1005,8 +1068,6 @@
 
   // --------------------- 사연 관리 목록 및 승인 로직 (이전과 동일) ---------------------
   async function fetchStoriesForManagement() {
-      // 🔑 사연 목록 불러오기 단계에서 멈춤 현상이 발생했으므로, 
-      // 여기서 managerPassword가 유효한지 다시 확인합니다.
       
       if (!currentChannelPin || !managerPassword) {
           document.getElementById('storyListArea').innerHTML = '<p style="color: red;">인증 정보가 없습니다. 다시 로그인해 주세요.</p>';
@@ -1179,7 +1240,7 @@
       }
   }
 
-  // --------------------- 사연 듣기 로직 (이전과 동일) ---------------------
+  // --------------------- 사연 듣기 로직 (수정됨: 플레이어 크기) ---------------------
   async function playStories(mode) {
       if (!currentChannelPin) {
           alert('채널 정보가 유효하지 않습니다.');
@@ -1188,6 +1249,7 @@
       playMode = mode;
       
       const playerArea = document.getElementById('playerArea');
+      // playerArea는 이제 scroll-text-box의 자식입니다.
       playerArea.innerHTML = `<p>승인되고 아직 재생되지 않은 사연을 불러오는 중...</p>`;
       
       startLoadingAnimation('사연 로드 중'); 
@@ -1203,30 +1265,37 @@
           if (storyData.length === 0) {
               playerArea.innerHTML = `<p>더 이상 읽을 사연이 없습니다! 🥳 해당 채널은 다음 날 자정 자동 삭제될 예정입니다.</p>`; 
               frequencyDisplay.textContent = '📻 모든 사연 재생 완료';
+              // YouTube Box 비우기
+              document.querySelector('.youtube-box').innerHTML = '';
               return;
           }
 
-          playerArea.innerHTML = `
+          // 🔑 수정: HTML 구조를 변경하여 플레이어와 스크롤 텍스트를 분리
+          mainContent.innerHTML = `
               <div class="story-player-area">
                 <div class="scroll-text-box">
-                    <div class="button-group" style="margin-bottom: 10px;">
-                        <button onclick="playStories('random')">랜덤 재생</button>
-                        <button onclick="playStories('sequential')">순차 재생</button>
-                    </div>
-                    <p>재생 버튼을 눌러주세요.</p>
-                    <div class="story-scroll-container" style="height: calc(100% - 100px);">
-                        <p id="scrollingText" class="story-text-scrolling"></p>
+                    <h2 class="content-title">🎶 사연 듣기 (프롬프트 영역)</h2>
+                    <p id="playerArea" style="margin-top: 10px;">재생 버튼을 눌러주세요.</p>
+                    <div class="story-scroll-container" style="height: calc(100% - 150px);"> <p id="scrollingText" class="story-text-scrolling"></p>
                     </div>
                 </div>
-                <div class="youtube-box">
-                    <div id="youtubePlayer"></div> 
+                
+                <div class="youtube-panel">
+                    <div class="playback-controls">
+                        <button class="icon-button" title="랜덤 재생" onclick="playStories('random')">&#10227;</button>
+                        <button class="icon-button" title="순차 재생" onclick="playStories('sequential')">&#9654;</button>
+                    </div>
+
+                    <div class="youtube-box">
+                        <div id="youtubePlayer"></div>
+                    </div>
                 </div>
               </div>
           `;
           
           loadYoutubeAPI();
       } else {
-          playerArea.innerHTML = `<p style="color: red;">🐛 사연을 불러오지 못했습니다: ${res.message}</p>`;
+          mainContent.innerHTML = `<p style="color: red;">🐛 사연을 불러오지 못했습니다: ${res.message}</p>`;
       }
   }
   
@@ -1251,18 +1320,20 @@
 
 
   function onYouTubeIframeAPIReady() {
-      if (!player || typeof player.destroy === 'function') {
-           player = new YT.Player('youtubePlayer', {
-              height: '100%',
-              width: '100%',
-              events: {
-                  'onReady': onPlayerReady,
-                  'onStateChange': onPlayerStateChange
-              }
-          });
-      } else {
-           playNextStory();
+      const youtubeBox = document.getElementById('youtubePlayer');
+      if (!youtubeBox) {
+          console.error("YouTube Player DOM element not found.");
+          return;
       }
+
+      player = new YT.Player('youtubePlayer', {
+          height: '100%',
+          width: '100%',
+          events: {
+              'onReady': onPlayerReady,
+              'onStateChange': onPlayerStateChange
+          }
+      });
   }
 
   function onPlayerReady(event) {
