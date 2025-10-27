@@ -307,7 +307,7 @@
     #searchResults li:hover {
         background-color: var(--dial-color);
     }
-
+    
     /* --------------------- 기타 스타일 (이전과 동일) --------------------- */
     .control-panel {
         display: flex;
@@ -521,33 +521,6 @@
         transition: background-color 0.1s;
     }
     .form-group button[type="submit"]:hover { background-color: #331f1d; }
-    
-    .story-scroll-container { height: 100%; overflow: hidden; position: relative; padding: 10px; }
-    .story-text-scrolling { 
-        position: absolute; 
-        width: 100%; 
-        font-size: 1.2em; 
-        color: var(--dark-wood); 
-        text-align: center; 
-        bottom: -100%; 
-        animation: scrollUp 30s linear infinite; 
-    }
-
-    @keyframes scrollUp {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(-1000px); } 
-    }
-    
-    .story-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
-    .story-table th, .story-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    .story-table th { background-color: #f2f2f2; color: var(--dark-wood); }
-    .story-table tr:nth-child(even) { background-color: #f9f9f9; }
-    .status-pending { color: orange; font-weight: bold; }
-    .status-approved { color: green; font-weight: bold; }
-    .status-rejected { color: red; font-weight: bold; }
-    .action-btn { padding: 3px 6px; margin: 1px; cursor: pointer; border: none; border-radius: 3px; font-size: 0.8em; }
-    .approve-btn { background-color: #4CAF50; color: white; }
-    .reject-btn { background-color: #f44336; color: white; }
 
   </style>
 </head>
@@ -938,6 +911,54 @@
     } 
   }
 
+  // --------------------- BACK (뒤로가기) 기능 (이전과 동일) ---------------------
+  function goBack() {
+      if (pageHistory.length > 1) {
+          pageHistory.pop(); 
+          const previousPage = pageHistory[pageHistory.length - 1];
+          loadContent(previousPage, true); 
+      } else {
+          loadContent('welcome', true); 
+      }
+  }
+  
+  // --------------------- QR 코드 생성 로직 (이전과 동일) ---------------------
+  function showQrCode() {
+      loadContent('qrcode');
+      frequencyDisplay.textContent = '📻 [QR CODE] - 접속 주파수';
+  }
+
+  function generateQrCode() {
+      const url = window.location.href.split('#')[0]; 
+      const qrcodeElement = document.getElementById('qrcode');
+      
+      new QRCode(qrcodeElement, {
+          text: url,
+          width: 90,
+          height: 90,
+          colorDark : "#000000",
+          colorLight : "#ffffff",
+          correctLevel : QRCode.CorrectLevel.H
+      });
+  }
+
+  // --------------------- getChannelTitle 함수 (이전과 동일) ---------------------
+  function getChannelTitle(page) {
+    switch (page) {
+        case 'listen': return 'ON AIR';
+        case 'write': return '사연 제출';
+        case 'manage_menu': 
+        case 'create_channel':
+        case 'login_manage_stories':
+        case 'login_listen':
+        case 'manage_stories': 
+        case 'list_stories': 
+            return '관리자'; 
+        case 'qrcode': return 'QR 코드';
+        default: return 'WELCOME';
+    }
+  }
+
   // --------------------- YouTube 검색 로직 (새로 추가됨) ---------------------
   let searchResultsData = [];
 
@@ -992,59 +1013,11 @@
       resultsContainer.innerHTML = `<li>✅ ${selected.title} 선택 완료!</li>`;
   }
   
-  // --------------------- BACK (뒤로가기) 기능 (이전과 동일) ---------------------
-  function goBack() {
-      if (pageHistory.length > 1) {
-          pageHistory.pop(); 
-          const previousPage = pageHistory[pageHistory.length - 1];
-          loadContent(previousPage, true); 
-      } else {
-          loadContent('welcome', true); 
-      }
-  }
-  
-  // --------------------- QR 코드 생성 로직 (이전과 동일) ---------------------
-  function showQrCode() {
-      loadContent('qrcode');
-      frequencyDisplay.textContent = '📻 [QR CODE] - 접속 주파수';
-  }
-
-  function generateQrCode() {
-      const url = window.location.href.split('#')[0]; 
-      const qrcodeElement = document.getElementById('qrcode');
-      
-      new QRCode(qrcodeElement, {
-          text: url,
-          width: 90,
-          height: 90,
-          colorDark : "#000000",
-          colorLight : "#ffffff",
-          correctLevel : QRCode.CorrectLevel.H
-      });
-  }
-
-  // --------------------- getChannelTitle 함수 (이전과 동일) ---------------------
-  function getChannelTitle(page) {
-    switch (page) {
-        case 'listen': return 'ON AIR';
-        case 'write': return '사연 제출';
-        case 'manage_menu': 
-        case 'create_channel':
-        case 'login_manage_stories':
-        case 'login_listen':
-        case 'manage_stories': 
-        case 'list_stories': 
-            return '관리자'; 
-        case 'qrcode': return 'QR 코드';
-        default: return 'WELCOME';
-    }
-  }
-  
   // --------------------- 사연 쓰기 - 핀 번호 검증 로직 (핵심 수정) ---------------------
   function setupStoryFormListeners() {
     const pinForm = document.getElementById('pinForm');
     const storyFormContainer = document.getElementById('writeForm');
-    const storyForm = document.getElementById('storyForm'); 
+    const storyForm = document.getElementById('storyForm'); // 사연 제출 폼 자체
     
     pinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1063,20 +1036,26 @@
             currentChannelPin = pin;
             currentChannelName = res.channelName;
             
+            // 🔑 수정 1: PIN 폼을 확실하게 숨김
             pinForm.style.display = 'none'; 
+            
+            // 🔑 수정 2: writeForm 컨테이너를 확실하게 표시
             storyFormContainer.style.display = 'block'; 
             
-            // 🔑 수정: 히스토리 상태만 업데이트합니다. (DOM 재로드를 막기 위해)
+            // 🚨 무한 루프 오류 수정: DOM 조작만 남기고 loadContent 제거
+
             pageHistory.push('write');
-            history.replaceState({ page: 'write' }, null, '#write');
+            history.replaceState({ page: 'write' }, null, `#write`);
             frequencyDisplay.textContent = `📻 [${currentChannelName}] 주파수 일치! 사연 제출 준비!`;
 
             channelNameDisplay.textContent = `[${currentChannelName}]에 사연을 제출하세요!`;
 
             if (isStorySubmitted) {
+                // 이미 제출했으면 사연 폼 숨기기
                 storyForm.style.display = 'none';
                 submissionStatus.textContent = '사연은 한 번만 제출할 수 있습니다. 🙏';
             } else {
+                // 제출하지 않았으면 사연 폼 표시
                 storyForm.style.display = 'block';
                 submissionStatus.textContent = '';
             }
@@ -1371,7 +1350,7 @@
       }
   }
 
-  // --------------------- 사연 듣기 로직 (이전과 동일) ---------------------
+  // --------------------- 사연 듣기 로직 (수정됨: 플레이어 크기) ---------------------
   async function playStories(mode) {
       if (!currentChannelPin) {
           alert('채널 정보가 유효하지 않습니다.');
@@ -1391,7 +1370,8 @@
       stopLoadingAnimation(); 
 
       if (res.success) {
-          const stories = res.results; 
+          // 🔑 수정: 응답 구조를 res.stories로 수정
+          const stories = res.stories; 
           storyData = stories.filter(s => s.youtubeUrl && !s.youtubeUrl.startsWith('Search:'));
           
           if (storyData.length === 0) {
