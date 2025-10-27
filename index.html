@@ -2,7 +2,7 @@
 <html>
 <head>
   <base target="_top">
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel-stylesheet>
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
   <style>
     /* --------------------- 초기 설정 및 레이아웃 --------------------- */
@@ -176,7 +176,7 @@
       flex-direction: column;
     }
     
-    /* --------------------- 사연 듣기 화면 분할 (수정됨: 3/5 vs 2/5) --------------------- */
+    /* --------------------- 사연 듣기 화면 분할 (최종 수정) --------------------- */
     .story-player-area {
         display: flex;
         height: 100%; 
@@ -186,7 +186,7 @@
     /* 왼쪽 3/5 영역: 스크롤 프롬프트 전용 */
     .scroll-text-box {
         flex: 3; /* 3/5 비율 */
-        overflow-y: hidden; /* 🔑 수정: 프롬프트 영역의 스크롤바 제거 */
+        overflow-y: hidden; 
         position: relative;
         padding: 10px;
         padding-right: 20px; /* 🔑 수정: 오른쪽 패딩 추가 (잘림 방지) */
@@ -197,7 +197,7 @@
     .youtube-panel {
         flex: 2; /* 2/5 비율 */
         display: flex;
-        flex-direction: column; /* 버튼과 영상을 수직 배치 */
+        flex-direction: column; 
         padding: 10px;
     }
     
@@ -238,43 +238,36 @@
         justify-content: center;
         align-items: flex-end; 
         width: 100%;
-        min-height: 150px; /* 🔑 수정: 플레이어 최소 높이 */
+        min-height: 150px; 
     }
 
     #youtubePlayer {
         width: 100%;
-        /* 🔑 수정: 높이 150px로 조정 */
-        height: 150px; 
+        height: 150px; /* 🔑 수정: 높이 150px로 조정 */
         max-height: 100%;
     }
     
     /* --------------------- 스크롤 텍스트 애니메이션 (속도 느리게) --------------------- */
-    .story-scroll-container { 
-        height: 100%; 
-        overflow: hidden; 
-        position: relative; 
-        padding: 10px; 
-    }
+    .story-scroll-container { height: 100%; overflow: hidden; position: relative; padding: 10px; }
 
     .story-text-scrolling { 
-        position: absolute;
-        width: 100%;
-        font-size: 1.2em;
-        color: var(--dark-wood);
-        text-align: center;
-        /* 텍스트가 완전히 사라지도록 높이 설정 */
+        position: absolute; 
+        width: 100%; 
+        font-size: 1.2em; 
+        color: var(--dark-wood); 
+        text-align: center; 
         bottom: -100%; 
-        /* 🔑 수정: 애니메이션 속도를 30초로 느리게 */
+        /* 🔑 수정: 애니메이션 속도를 30초로 느리게 조정 */
         animation: scrollUp 30s linear infinite; 
     }
 
     @keyframes scrollUp {
         0% { transform: translateY(0); }
-        /* 텍스트가 완전히 위로 올라가도록 트랜스폼 높이 조정 */
+        /* 🔑 수정: 트랜스폼 높이를 충분히 주어 글자가 완전히 사라지도록 함 */
         100% { transform: translateY(-1000px); } 
     }
 
-    /* --------------------- 폼 입력 필드 개선 (핵심 복구) --------------------- */
+    /* --------------------- 폼 입력 필드 복구 (핵심 복구) --------------------- */
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--dark-wood); }
     
@@ -284,9 +277,9 @@
     .form-group textarea { 
       width: 100%; 
       padding: 8px; 
-      /* 🔑 폰트 상속으로 고운 돋움 적용 */
+      /* 🔑 복구: 폰트 상속으로 고운 돋움 적용 */
       font-family: inherit; 
-      /* 🔑 디자인 복구 */
+      /* 🔑 복구: 빈티지 테마 디자인 */
       background-color: var(--dial-color);
       color: var(--dark-wood);
       border: 2px solid var(--panel-bg);
@@ -516,13 +509,11 @@
         color: var(--dark-wood); 
         text-align: center; 
         bottom: -100%; 
-        /* 🔑 수정: 속도를 30초로 느리게 조정 */
         animation: scrollUp 30s linear infinite; 
     }
 
     @keyframes scrollUp {
         0% { transform: translateY(0); }
-        /* 🔑 수정: 콘텐츠 높이에 따라 트랜스폼 높이를 조정 (글자가 완전히 사라지도록) */
         100% { transform: translateY(-1000px); } 
     }
     
@@ -723,7 +714,7 @@
         frequencyDisplay.textContent = `📻 [${getChannelTitle(page)}] 채널`;
     }
     
-    // 🔑 수정: radioScreen의 flex-direction을 제어할 필요 없음. mainContent가 column을 유지
+    // 🔑 수정: radioScreen의 flex-direction을 column으로 유지 (mainContent가 height: 100%를 가지도록 함)
     radioScreen.style.flexDirection = 'column'; 
     
     switch (page) {
@@ -965,7 +956,7 @@
     }
   }
   
-  // --------------------- 사연 쓰기 - 핀 번호 검증 로직 (이전과 동일) ---------------------
+  // --------------------- 사연 쓰기 - 핀 번호 검증 로직 (핵심 수정) ---------------------
   function setupStoryFormListeners() {
     const pinForm = document.getElementById('pinForm');
     const storyFormContainer = document.getElementById('writeForm');
@@ -988,13 +979,20 @@
             currentChannelPin = pin;
             currentChannelName = res.channelName;
             
+            // 🔑 수정 1: PIN 폼을 확실하게 숨김
             pinForm.style.display = 'none'; 
+            
+            // 🔑 수정 2: writeForm 컨테이너를 확실하게 표시
             storyFormContainer.style.display = 'block'; 
             
-            loadContent('write'); 
+            // loadContent('write'); // 🚨🚨 오류의 근본 원인: 재귀적 호출을 제거합니다!
+            
+            // 🔑 수정: 히스토리 상태만 업데이트합니다. (DOM 재로드를 막기 위해 skipHistory=true)
+            pageHistory.push('write');
+            history.replaceState({ page: 'write' }, null, '#write');
+            frequencyDisplay.textContent = `📻 [${currentChannelName}] 주파수 일치! 사연 제출 준비!`;
 
             channelNameDisplay.textContent = `[${currentChannelName}]에 사연을 제출하세요!`;
-            frequencyDisplay.textContent = `📻 [${currentChannelName}] 주파수 일치! 사연 제출 준비!`;
 
             if (isStorySubmitted) {
                 storyForm.style.display = 'none';
@@ -1294,19 +1292,13 @@
       }
   }
 
-  // --------------------- 사연 듣기 로직 (수정됨: 플레이어 크기) ---------------------
+  // --------------------- 사연 듣기 로직 (이전과 동일) ---------------------
   async function playStories(mode) {
       if (!currentChannelPin) {
           alert('채널 정보가 유효하지 않습니다.');
           return;
       }
       playMode = mode;
-      
-      // 🔑 수정: playerArea를 찾지 않음
-      
-      // DOM 재구성은 loadContent가 처리해야 할 부분이었으나, 
-      // 현재는 playStories가 실행된 후 mainContent가 다시 로드되므로, 
-      // 이 로직을 통해 DOM을 직접 구성합니다.
       
       const playerArea = document.getElementById('mainContent').querySelector('.scroll-text-box #playerArea');
       if (playerArea) {
@@ -1324,15 +1316,11 @@
           storyData = stories.filter(s => s.youtubeUrl && !s.youtubeUrl.startsWith('Search:'));
           
           if (storyData.length === 0) {
-              // 🔑 수정: DOM을 다시 그려서 모든 요소가 업데이트되도록 함
               mainContent.innerHTML = `
                   <h2 class="content-title">🎶 사연 듣기</h2>
                   <p>더 이상 읽을 사연이 없습니다! 🥳 해당 채널은 다음 날 자정 자동 삭제될 예정입니다.</p>
               `; 
               frequencyDisplay.textContent = '📻 모든 사연 재생 완료';
-              // YouTube Box 비우기
-              const youtubeBox = document.querySelector('.youtube-box');
-              if(youtubeBox) youtubeBox.innerHTML = '';
               return;
           }
 
