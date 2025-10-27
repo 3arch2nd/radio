@@ -467,7 +467,7 @@
 <script>
   // --------------------- 클라이언트 JavaScript (바닐라 JS) - Cloudflare Worker 통신용 ---------------------
   
-  // 💡 Cloudflare Worker의 URL로 교체하세요. 
+  // 🔑 수정! 요청하신 Workers URL을 반영합니다.
   const WORKER_API_ENDPOINT = 'https://radio.bbglara.workers.dev/'; 
   
   const mainContent = document.getElementById('mainContent');
@@ -944,8 +944,10 @@
       }
   }
 
-  // --------------------- 사연 관리 목록 및 승인 로직 (이전과 동일) ---------------------
+  // --------------------- 사연 관리 목록 및 승인 로직 (수정됨) ---------------------
   async function fetchStoriesForManagement() {
+      // 🔑 수정: 함수 시작 시 로딩 애니메이션은 loadContent에서 이미 처리됨.
+      
       if (!currentChannelPin || !managerPassword) {
           document.getElementById('storyListArea').innerHTML = '<p style="color: red;">인증 정보가 없습니다. 다시 로그인해 주세요.</p>';
           return;
@@ -971,7 +973,20 @@
               return;
           }
           
-          let tableHtml = `<table class="story-table"><thead><tr><th>날짜</th><th>이름</th><th>사연 (앞 15자)</th><th>URL</th><th>상태</th><th>관리</th></tr></thead><tbody>`;
+          let tableHtml = `
+            <form id="bulkUpdateForm">
+            <table class="story-table">
+                <thead>
+                    <tr>
+                        <th>날짜</th>
+                        <th>이름</th>
+                        <th>사연 (앞 15자)</th>
+                        <th>URL</th>
+                        <th>상태</th>
+                        <th>승인/거절</th>
+                    </tr>
+                </thead>
+                <tbody>`;
           
           stories.forEach(story => {
               let statusText = story.status;
@@ -995,21 +1010,92 @@
                       <td><a href="${story.youtubeUrl}" target="_blank">링크</a></td>
                       <td class="${statusClass}">${statusText}</td>
                       <td>
-                          <button class="action-btn approve-btn" onclick="updateStoryStatus(${story.rowNum}, 'Approved')">확인</button>
-                          <button class="action-btn reject-btn" onclick="updateStoryStatus(${story.rowNum}, 'Rejected')">거절</button>
+                          <select name="status_${story.rowNum}" data-row="${story.rowNum}" class="status-select">
+                              <option value="${story.status}" selected disabled>${story.status}</option>
+                              <option value="Approved" ${story.status === 'Approved' ? 'selected' : ''}>승인 (Approved)</option>
+                              <option value="Rejected" ${story.status === 'Rejected' ? 'selected' : ''}>거절 (Rejected)</option>
+                              <option value="Pending" ${story.status === 'Pending' ? 'selected' : ''}>대기 (Pending)</option>
+                          </select>
                       </td>
                   </tr>
               `;
           });
 
-          tableHtml += `</tbody></table>`;
-          storyListArea.innerHTML = tableHtml;
+          tableHtml += `</tbody></table>
+                      <button type="submit" class="button-group" style="margin-top: 15px; background-color: var(--dark-wood); color: white;">일괄 저장 (상태 변경)</button>
+                      </form>`;
+        
+        storyListArea.innerHTML = tableHtml;
+        
+        // 🔑 이벤트 리스너: 폼 제출 시 handleBulkSave 함수 호출
+        document.getElementById('bulkUpdateForm').addEventListener('submit', handleBulkSave);
 
       } else {
           storyListArea.innerHTML = `<p style="color: red;">🐛 사연 목록을 불러오지 못했습니다: ${res.message}</p>`;
       }
   }
   
+  /**
+   * 🔑 추가! 폼 데이터를 수집하고 서버에 일괄 업데이트 요청을 보냅니다.
+   */
+  async function handleBulkSave(e) {
+      e.preventDefault();
+      
+      if (!currentChannelPin || !managerPassword) {
+          alert('채널 인증 정보가 유효하지 않습니다.');
+          return;
+      }
+      
+      if (!confirm('변경된 상태를 서버에 일괄 저장하시겠습니까?')) {
+          return;
+      }
+
+      const form = e.target;
+      const selectElements = form.querySelectorAll('.status-select');
+      const updates = [];
+      
+      let isChanged = false;
+      
+      selectElements.forEach(select => {
+          // 첫 번째 옵션이 현재 상태(이전 상태)입니다.
+          const initialStatus = select.options[0].value; 
+          const newStatus = select.value;
+          
+          if (initialStatus !== newStatus) {
+              updates.push({
+                  rowNum: parseInt(select.dataset.row),
+                  newStatus: newStatus
+              });
+              isChanged = true;
+          }
+      });
+      
+      if (!isChanged) {
+          alert('변경된 내용이 없습니다.');
+          return;
+      }
+
+      const saveButton = form.querySelector('button[type="submit"]');
+      saveButton.textContent = '저장 중...';
+      saveButton.disabled = true;
+
+      // 서버에 일괄 업데이트 요청
+      const res = await callWorker('bulkUpdateStories', {
+          pin: currentChannelPin,
+          password: managerPassword,
+          updates: updates
+      });
+      
+      if (res.success) {
+          alert(res.message);
+      } else {
+          alert(`🐛 일괄 저장 실패: ${res.message}`);
+      }
+
+      // 목록 새로고침
+      fetchStoriesForManagement(); 
+  }
+
   async function updateStoryStatus(rowNum, newStatus) {
       if (!confirm(`행 번호 ${rowNum}의 사연을 '${newStatus}' 상태로 변경하시겠습니까?`)) {
           return;
