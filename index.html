@@ -561,7 +561,6 @@
   function loadContent(page, skipHistory = false) {
     let html = '';
     
-    // 🔑 수정: 새로운 페이지 로드 전에 로딩 애니메이션을 무조건 중지
     stopLoadingAnimation(); 
     
     if (!skipHistory) {
@@ -705,9 +704,11 @@
         break;
 
       case 'list_stories':
+        // 🔑 수정: loadContent 내에서 fetchStoriesForManagement를 직접 호출하지 않습니다.
+        // 대신, DOM이 안정화된 후 setTimeout을 통해 호출합니다.
         html = `<h2 class="content-title">📝 [${currentChannelName}] 사연 목록</h2>
                 <div id="storyListArea"><p>사연 목록을 불러오는 중...</p></div>`;
-        fetchStoriesForManagement(); 
+        setTimeout(fetchStoriesForManagement, 50); // 50ms 지연 후 호출
         break;
       
       case 'qrcode':
@@ -790,7 +791,7 @@
     }
   }
   
-  // --------------------- 사연 쓰기 - 핀 번호 검증 로직 (수정됨) ---------------------
+  // --------------------- 사연 쓰기 - 핀 번호 검증 로직 (이전과 동일) ---------------------
   function setupStoryFormListeners() {
     const pinForm = document.getElementById('pinForm');
     const storyFormContainer = document.getElementById('writeForm');
@@ -945,7 +946,7 @@
       }
   }
 
-  // --------------------- 사연 관리 목록 및 승인 로직 (이전과 동일) ---------------------
+  // --------------------- 사연 관리 목록 및 승인 로직 (수정됨) ---------------------
   async function fetchStoriesForManagement() {
       if (!currentChannelPin || !managerPassword) {
           document.getElementById('storyListArea').innerHTML = '<p style="color: red;">인증 정보가 없습니다. 다시 로그인해 주세요.</p>';
