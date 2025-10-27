@@ -467,7 +467,7 @@
 <script>
   // --------------------- 클라이언트 JavaScript (바닐라 JS) - Cloudflare Worker 통신용 ---------------------
   
-  // 🔑 수정! 요청하신 Workers URL을 반영합니다.
+  // 🔑 반영! Workers URL을 반영합니다.
   const WORKER_API_ENDPOINT = 'https://radio.bbglara.workers.dev/'; 
   
   const mainContent = document.getElementById('mainContent');
@@ -944,7 +944,7 @@
       }
   }
 
-  // --------------------- 사연 관리 목록 및 승인 로직 (수정됨) ---------------------
+  // --------------------- 사연 관리 목록 및 승인 로직 (최종 수정) ---------------------
   async function fetchStoriesForManagement() {
       // 🔑 수정: 함수 시작 시 로딩 애니메이션은 loadContent에서 이미 처리됨.
       
@@ -980,8 +980,7 @@
                     <tr>
                         <th>날짜</th>
                         <th>이름</th>
-                        <th>사연 (앞 15자)</th>
-                        <th>URL</th>
+                        <th><span title="마우스를 올리면 전체 내용이 보입니다.">사연 (앞 15자)</span></th> <th>URL</th>
                         <th>상태</th>
                         <th>승인/거절</th>
                     </tr>
@@ -1006,8 +1005,7 @@
                   <tr>
                       <td>${formattedDate}</td>
                       <td>${story.name}</td>
-                      <td>${contentSnippet}</td>
-                      <td><a href="${story.youtubeUrl}" target="_blank">링크</a></td>
+                      <td title="${story.content}">${contentSnippet}</td> <td><a href="${story.youtubeUrl}" target="_blank">링크</a></td>
                       <td class="${statusClass}">${statusText}</td>
                       <td>
                           <select name="status_${story.rowNum}" data-row="${story.rowNum}" class="status-select">
