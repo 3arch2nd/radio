@@ -611,7 +611,7 @@
       
       <div class="radio-screen" id="radioScreen">
         <div class="main-content" id="mainContent">
-            <h2 class="content-title">✨ 라디오는 사연을 싣고 ✨</h2>
+            <h2 class="content-title">📻 라디오는 사연을 싣고 💌</h2>
             <p>아래 다이얼을 눌러 원하는 기능을 선택해 주세요!</p>
             <p>📝 사연 쓰기 : 사연을 적고 제출할 수 있어요.</p>
             <p>🔑 사연 관리 : 라디오를 개설하고 사연을 불러올 수 있어요.</p>
@@ -724,7 +724,7 @@
       
       loadingInterval = setInterval(() => {
           let dotString = '.'.repeat(dots);
-          frequencyDisplay.textContent = `📻 [${loadingTitle}] ${baseMessage}${dotString}`;
+          frequencyDisplay.textContent = `[${loadingTitle}] ${baseMessage}${dotString}`;
           
           dots++;
           if (dots > 3) {
@@ -816,9 +816,9 @@
     }
 
     if (page === 'welcome') {
-        frequencyDisplay.textContent = '📻 라디오는 사연을 싣고 - 환영합니다!';
+        frequencyDisplay.textContent = '라디오는 사연을 싣고 - 환영합니다!';
     } else {
-        frequencyDisplay.textContent = `📻 [${getChannelTitle(page)}] 채널`;
+        frequencyDisplay.textContent = `[${getChannelTitle(page)}] 채널`;
     }
     
     radioScreen.style.flexDirection = 'column'; 
@@ -1017,7 +1017,7 @@
           <p>📝 사연 쓰기 : 사연을 적고 제출할 수 있어요.</p>
           <p>🔑 사연 관리 : 라디오를 개설하고 사연을 불러올 수 있어요.</p>
         `;
-        frequencyDisplay.textContent = '📻 라디오는 사연을 싣고 - 환영합니다!';
+        frequencyDisplay.textContent = '라디오는 사연을 싣고 - 환영합니다!';
     }
     
     mainContent.innerHTML = html; 
@@ -1051,7 +1051,7 @@
   // --------------------- QR 코드 생성 ---------------------
   function showQrCode() {
       loadContent('qrcode');
-      frequencyDisplay.textContent = '📻 [QR CODE] - 접속 주파수';
+      frequencyDisplay.textContent = '[QR CODE] - 접속 주파수';
   }
   function generateQrCode() {
       const url = window.location.href.split('#')[0]; 
@@ -1160,7 +1160,7 @@
             
             pageHistory.push('write');
             history.replaceState({ page: 'write' }, null, `#write`);
-            frequencyDisplay.textContent = `📻 [${currentChannelName}] 주파수 일치! 사연 제출 준비!`;
+            frequencyDisplay.textContent = `[${currentChannelName}] 주파수 일치! 사연을 제출할 수 있습니다.`;
 
             channelNameDisplay.textContent = `[${currentChannelName}]에 사연을 제출하세요!`;
 
@@ -1470,9 +1470,9 @@
           if (storyData.length === 0) {
               mainContent.innerHTML = `
                   <h2 class="content-title">🎶 사연 듣기</h2>
-                  <p>더 이상 읽을 사연이 없습니다! 🥳 해당 채널은 다음 날 자정 자동 삭제될 예정입니다.</p>
+                  <p>읽을 사연이 없습니다! 해당 채널은 다음 날 자정 자동 삭제될 예정입니다.</p>
               `; 
-              frequencyDisplay.textContent = '📻 모든 사연 재생 완료';
+              frequencyDisplay.textContent = '모든 사연 재생 완료';
               return;
           }
 
@@ -1547,7 +1547,7 @@
               'disablekb': 1,
               'iv_load_policy': 3,
               'showinfo': 0,
-              'cc_load_policy': 1
+              'cc_load_policy': 0
           },
           events: {
               'onReady': onPlayerReady,
@@ -1588,7 +1588,7 @@
               const storyInfoElement = document.getElementById('currentStoryInfo');
               if (storyInfoElement) {
                 const totalRemaining = storyData.length;
-                storyInfoElement.textContent = `${totalRemaining}개 사연 중 ${currentStoryIndex + 1}번째 재생 중`;
+                storyInfoElement.textContent = `${totalRemaining}개 사연 중 ${currentStoryIndex + 1}번째`;
               }
               callWorker('setStoryPlayed', { 
                   pin: currentChannelPin, 
@@ -1609,8 +1609,8 @@
 
       if (storyData.length === 0) {
           const playerArea = document.getElementById('playerArea');
-          playerArea.innerHTML = `<p>더 이상 읽을 사연이 없습니다! 🥳 해당 채널은 다음 날 자정 자동 삭제될 예정입니다.</p>`;
-          frequencyDisplay.textContent = '📻 모든 사연 재생 완료';
+          playerArea.innerHTML = `<p>더 읽을 사연이 없습니다! 해당 채널은 자동 삭제될 예정입니다.</p>`;
+          frequencyDisplay.textContent = '모든 사연 재생 완료';
           if (storyInfoElement) storyInfoElement.textContent = `0/${totalStories} 새 사연 중 0번째`;
           if (player) player.stopVideo();
           return;
@@ -1630,30 +1630,32 @@
       const videoId = getYoutubeVideoId(story.youtubeUrl);
       
       if (videoId && player) {
-          setTimeout(() => {
-              player.loadVideoById(videoId);
-          }, 2000); 
-          
-          frequencyDisplay.textContent = `🎶 ON AIR: ${story.name} 님의 사연 (채널: ${currentChannelName})`;
-          
-          if (storyInfoElement) {
-              const totalRemaining = storyData.length;
-              storyInfoElement.textContent = `${totalRemaining}개 사연 중 ${currentStoryIndex + 1}번째 재생 중`;
-          }
+              player.loadVideoById(videoId); // 음악 먼저 로드/재생
+              
+              frequencyDisplay.textContent = `ON AIR: ${story.name} 님의 사연 (채널: ${currentChannelName})`;
+              
+              if (storyInfoElement) {
+                  const totalRemaining = storyData.length;
+                  storyInfoElement.textContent = `${totalRemaining}개 사연 중 ${currentStoryIndex + 1}번째 재생 중`;
+              }
 
-          const scrollingText = document.getElementById('scrollingText');
-          // ✅ 줄바꿈 적용: 제목 라인 + 본문
-          scrollingText.textContent = `[${story.name} 님의 사연]\n${story.content}`;
-          // 애니메이션 재적용
-          scrollingText.style.animation = 'none';
-          scrollingText.style.top = '100%';
-          void scrollingText.offsetWidth;
-          scrollingText.style.animation = `scrollUp var(--scrollDur) linear forwards`;
+              const scrollingText = document.getElementById('scrollingText');
+              // 줄바꿈 적용: 제목 라인 + 본문
+              scrollingText.textContent = `[${story.name} 님의 사연]\n${story.content}`;
+              
+              // 애니메이션을 초기화 (숨김)
+              scrollingText.style.animation = 'none';
+              scrollingText.style.top = '100%';
+              
+              // 🐛 변경: 유튜브 재생 후 3초 뒤에 사연 스크롤 시작
+              setTimeout(() => {
+                  void scrollingText.offsetWidth; // Reflow를 강제하여 애니메이션을 다시 적용
+                  scrollingText.style.animation = `scrollUp var(--scrollDur) linear forwards`;
+                  // ✅ 현재 선택된 크기 모드 반영
+                  applyTextSize(false);
+              }, 3000); // 👈 3초 (3000ms) 지연 설정
 
-          // ✅ 현재 선택된 크기 모드 반영
-          applyTextSize(false);
-
-      } else {
+          } else {
           console.error('유효하지 않은 YouTube URL 또는 ID: ', story.youtubeUrl);
           storyData.splice(currentStoryIndex, 1);
           currentStoryIndex = -1; 
