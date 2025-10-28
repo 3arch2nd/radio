@@ -612,8 +612,8 @@
       <div class="radio-screen" id="radioScreen">
         <div class="main-content" id="mainContent">
             <h2 class="content-title">📻 라디오는 사연을 싣고 💌</h2>
-            <p>아래 다이얼을 눌러 원하는 기능을 선택해 주세요!</p>
-            <p>📝 사연 쓰기 : 사연을 적고 신청곡과 함께 제출할 수 있어요.</p>
+            <p>아래 다이얼을 눌러 원하는 기능을 선택하세요!</p>
+            <p>📝 사연 쓰기 : 사연을 적고 신청곡과 함께 보낼 수 있어요.</p>
             <p>🔑 사연 관리 : 라디오를 개설하고 사연을 불러올 수 있어요.</p>
         </div>
       </div>
@@ -828,7 +828,7 @@
         html = `
           <h2 class="content-title">📻 라디오는 사연을 싣고 💌</h2>
           <p>하단 다이얼을 눌러 원하는 기능을 선택하세요!</p>
-          <p>📝 사연 쓰기 : 사연을 적고 제출할 수 있어요.</p>
+          <p>📝 사연 쓰기 : 사연을 적고 신청곡과 함께 보낼 수 있어요.</p>
           <p>🔑 사연 관리 : 사연을 불러올 수 있어요. (관리자 페이지)</p>
         `;
         break;
@@ -905,7 +905,7 @@
                   <input type="text" id="storyUrl" placeholder="선택 후 자동 입력됩니다." required>
               </div>
 
-              <button type="submit">사연 제출</button>
+              <button type="submit">사연 보내기</button>
             </form>
             <p id="submissionStatus" style="margin-top: 15px; color: var(--error-color); font-weight: bold;"></p>
           </div>
@@ -922,7 +922,7 @@
             </div>
             <div class="menu-item-wrapper">
                 <button onclick="loadContent('login_manage_stories')">사연 관리 (승인/거절)</button>
-                <p>로그인 후 제출된 사연을 <br> 승인/거절합니다.</p>
+                <p>로그인 후 도착한 사연을 <br> 승인/거절합니다.</p>
             </div>
             <div class="menu-item-wrapper">
                 <button onclick="loadContent('login_listen')">사연 듣기 (채널 연결)</button>
@@ -1013,8 +1013,8 @@
       default:
         html = `
           <h2 class="content-title">✨ 라디오는 사연을 싣고 ✨</h2>
-          <p>하단 다이얼을 눌러 원하는 기능을 선택해 주세요!</p>
-          <p>📝 사연 쓰기 : 사연을 적고 제출할 수 있어요.</p>
+          <p>하단 다이얼을 눌러 원하는 기능을 선택하세요!</p>
+          <p>📝 사연 쓰기 : 사연을 적고 신청곡과 함께 보낼 수 있어요.</p>
           <p>🔑 사연 관리 : 라디오를 개설하고 사연을 불러올 수 있어요.</p>
         `;
         frequencyDisplay.textContent = '라디오는 사연을 싣고 - 환영합니다!';
@@ -1071,7 +1071,7 @@
   function getChannelTitle(page) {
     switch (page) {
         case 'listen': return 'ON AIR';
-        case 'write': return '사연 제출';
+        case 'write': return '사연 보내기';
         case 'manage_menu': 
         case 'create_channel':
         case 'login_manage_stories':
@@ -1160,13 +1160,13 @@
             
             pageHistory.push('write');
             history.replaceState({ page: 'write' }, null, `#write`);
-            frequencyDisplay.textContent = `[${currentChannelName}] 주파수 일치! 사연을 제출할 수 있습니다.`;
+            frequencyDisplay.textContent = `[${currentChannelName}] 주파수 일치! 사연을 보낼 수 있습니다.`;
 
             channelNameDisplay.textContent = `[${currentChannelName}]에 사연 보내기`;
 
             if (isStorySubmitted) {
                 storyForm.style.display = 'none';
-                submissionStatus.textContent = '사연은 한 번만 제출할 수 있습니다.';
+                submissionStatus.textContent = '사연은 한 번만 보낼 수 있습니다.';
             } else {
                 storyForm.style.display = 'block';
                 submissionStatus.textContent = '';
@@ -1185,7 +1185,7 @@
   async function handleStorySubmit(e) {
     e.preventDefault();
     if (isStorySubmitted || !currentChannelPin) {
-        alert('채널 인증이 필요하거나 이미 사연을 제출했습니다. 💡');
+        alert('채널 인증이 필요하거나 이미 사연을 보냈습니다. 💡');
         return;
     }
 
@@ -1194,8 +1194,8 @@
     const url = document.getElementById('storyUrl').value;
     const statusDiv = document.getElementById('submissionStatus');
     
-    startLoadingAnimation('사연 제출 중');
-    statusDiv.textContent = '제출 중... 잠시만 기다려주세요.';
+    startLoadingAnimation('사연 보내는 중');
+    statusDiv.textContent = '보내는 중... 잠시만 기다려주세요.';
 
     const res = await callWorker('submitStory', { 
         name: name, 
@@ -1207,7 +1207,7 @@
     stopLoadingAnimation();
 
     if (res.success) {
-        statusDiv.textContent = '✅ 사연이 제출되었습니다! (승인 대기 중)';
+        statusDiv.textContent = '✅ 사연이 보내졌습니다! (승인 대기 중)';
         isStorySubmitted = true;
         document.getElementById('storyForm').style.display = 'none';
     } else {
@@ -1263,7 +1263,7 @@
       
       stopLoadingAnimation(); 
 
-      if (authRes.success || (authRes.message && authRes.message.includes('제출된 사연이 없습니다'))) { 
+      if (authRes.success || (authRes.message && authRes.message.includes('도착한 사연이 없습니다'))) { 
           const channelInfo = await callWorker('getChannelInfoByPin', { pin });
           if (channelInfo.success) {
             currentChannelName = channelInfo.channelName;
@@ -1307,7 +1307,7 @@
       if (res.success) {
           const stories = res.stories;
           if (stories.length === 0) {
-              storyListArea.innerHTML = `<p>아직 제출된 사연이 없습니다. 📝</p>`;
+              storyListArea.innerHTML = `<p>아직 도착한 사연이 없습니다. 📝</p>`;
               return;
           }
           
