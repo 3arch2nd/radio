@@ -157,6 +157,7 @@
           height: auto; 
           padding: 0;
       }
+
       /* 모바일 관리자 메뉴 수직 정렬 복구 */
       .main-content .menu-wrapper {
           flex-direction: column;
@@ -248,9 +249,9 @@
         flex: 3; /* 3/5 비율 */
         overflow-y: hidden; 
         position: relative;
-        /* 🔑 수정: 왼쪽 패딩 복구 */
-        padding: 10px; 
+        padding: 10px;
         padding-right: 20px; 
+        padding-left: 5px; 
         border-right: 1px solid #ccc; 
         height: 100%; 
         display: flex; 
@@ -264,13 +265,17 @@
         font-size: 2.4em !important; 
         color: var(--dark-wood); 
         text-align: center; 
-        /* 🔑 수정! 텍스트 상단의 시작 위치를 컨테이너 바닥에 설정 */
         top: 100%; 
         padding: 0 10px; 
-        /* animation은 JS에서 제어 */
+        animation: scrollUp 45s linear forwards; 
     }
 
-    /* 🔑 수정! 텍스트 박스 안의 제목과 안내 문구 높이 고정 */
+    @keyframes scrollUp {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-2000px); } 
+    }
+
+    /* 텍스트 박스 안의 제목과 안내 문구 높이 고정 */
     .scroll-text-box h2,
     .scroll-text-box p#playerArea {
         flex-shrink: 0; /* 높이가 줄어들지 않도록 고정 */
@@ -283,13 +288,6 @@
         overflow: hidden; 
         position: relative; 
         padding: 10px 0; 
-    }
-
-    @keyframes scrollUp {
-        /* top: 100% 위치에서 transform: translateY(0)으로 시작 */
-        0% { transform: translateY(0); }
-        /* 🔑 수정! 텍스트가 화면 위로 완전히 사라지도록 충분한 이동 거리를 설정 */
-        100% { transform: translateY(-2000px); } 
     }
 
     /* 오른쪽 2/5 영역: 유튜브 플레이어 및 버튼 */
@@ -411,10 +409,14 @@
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.6);
-        display: none !important; /* 기본 숨김 */
+        display: none; /* 🔑 수정: 기본 숨김 (클래스 토글로 제어) */
         justify-content: center;
         align-items: center;
         z-index: 1000;
+    }
+    /* 🔑 추가: 모달 표시 상태 (JS에서 .show 클래스 추가/제거) */
+    .modal-overlay.show {
+        display: flex !important; 
     }
 
     .modal-content {
@@ -619,7 +621,7 @@
     Copyright © 2025 휴르쌤. All rights reserved.
   </div>
 
-  <div id="resultModalOverlay" class="modal-overlay" style="display: none;" onclick="closeModal()">
+  <div id="resultModalOverlay" class="modal-overlay" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <h3 id="modalTitle">채널 생성 완료</h3>
         <p id="modalMessage"></p>
@@ -681,7 +683,7 @@
       stopLoadingAnimation(); 
       
       let dots = 1;
-      const loadingTitle = 'loading'; 
+      const loadingTitle = 'loading'; // 🔑 수정: [loading]으로 통일
       
       loadingInterval = setInterval(() => {
           let dotString = '.'.repeat(dots);
@@ -709,14 +711,17 @@
   function showModal(title, pin, password) {
       document.getElementById('modalTitle').textContent = title;
       // 🔑 수정: 줄바꿈 적용
-      document.getElementById('modalMessage').innerHTML = '학생 접속 및 관리자 로그인을 위해 다음 정보를 꼭 저장해 주세요!<br>다음 정보를 꼭 저장해 주세요!';
+      document.getElementById('modalMessage').innerHTML = '학생 접속 및 관리자 로그인을 위해<br>다음 정보를 꼭 저장해 주세요!';
       document.getElementById('modalPin').textContent = pin;
       document.getElementById('modalPassword').textContent = password;
-      document.getElementById('resultModalOverlay').style.display = 'flex';
+      
+      // 🔑 수정! 클래스 추가로 팝업 표시
+      document.getElementById('resultModalOverlay').classList.add('show');
   }
 
   function closeModal() {
-      document.getElementById('resultModalOverlay').style.display = 'none';
+      // 🔑 수정! 클래스 제거로 팝업 숨김
+      document.getElementById('resultModalOverlay').classList.remove('show');
       loadContent('manage_menu'); 
   }
 
@@ -860,7 +865,7 @@
         
       case 'create_channel':
         html = `
-          <h2 class="content-title">🆕 새 채널 만들기</h2>
+          <h2 class="content-title">🛠️ 새 채널 만들기</h2>
           <form id="createChannelForm">
             <div class="form-group">
                 <label for="channelName">채널명:</label>
@@ -945,7 +950,6 @@
           <p>📝 사연 쓰기 : 사연을 적고 제출할 수 있어요.</p>
           <p>🔑 사연 관리 : 라디오를 개설하고 사연을 불러올 수 있어요.</p>
         `;
-        // 🔑 타이틀 수정
         frequencyDisplay.textContent = '📻 라디오는 사연을 싣고 - 환영합니다!';
     }
     
@@ -1007,7 +1011,6 @@
         case 'list_stories': 
             return '관리자'; 
         case 'qrcode': return 'QR 코드';
-        // 🔑 타이틀 수정
         default: return '라디오는 사연을 싣고';
     }
   }
@@ -1605,7 +1608,7 @@
           // 🔑 추가: 진행 상황 표시 (재생 '예정' 시점)
           if (storyInfoElement) {
               const totalRemaining = storyData.length;
-              storyInfoElement.textContent = `${totalRemaining}개 사연 중 ${currentStoryIndex + 1}번째 재생 예정`;
+              storyInfoElement.textContent = `${totalRemaining}개 사연 중 ${currentStoryIndex + 1}번째 재생 중`;
           }
 
           const scrollingText = document.getElementById('scrollingText');
@@ -1613,13 +1616,10 @@
           
           // 🔑 최종 수정: 애니메이션을 초기화하고 다시 적용하여 스크롤을 바닥에서부터 시작
           scrollingText.style.animation = 'none';
-          scrollingText.style.top = '100%'; /* 바닥에서 시작하도록 설정 */
-          
-          // 텍스트 길이에 비례하여 애니메이션 시간 결정
-          const duration = Math.max(30, story.content.length * 0.2); 
+          scrollingText.style.top = '100%'; // 컨테이너 바닥에서 시작하도록 설정
           
           void scrollingText.offsetWidth; // Reflow 강제
-          scrollingText.style.animation = `scrollUp ${duration}s linear forwards`; 
+          scrollingText.style.animation = 'scrollUp 57s linear forwards'; // 🔑 수정: 57초로 변경
 
       } else {
           console.error('유효하지 않은 YouTube URL 또는 ID: ', story.youtubeUrl);
