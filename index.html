@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
 <head>
   <base target="_top">
@@ -15,6 +15,8 @@
       --font-color: #333;
       --gowun-dodum: 'Gowun Dodum', sans-serif;
       --error-color: var(--dark-wood);
+      /* 스크롤 지속시간 변수 (요청 반영: 기본 57초) */
+      --scrollDur: 57s;
     }
 
     body {
@@ -62,7 +64,7 @@
       z-index: 10; 
     }
     
-    /* --------------------- 모바일 반응형 디자인 (이전과 동일) --------------------- */
+    /* --------------------- 모바일 반응형 디자인 --------------------- */
     @media (max-width: 768px) {
       .radio-wrapper {
         width: 95vw;
@@ -195,14 +197,14 @@
       min-height: 0; 
     }
     
-    /* 🔑 수정 1: 메인 페이지 제목 아래 구분선 추가 */
+    /* 🔑 메인 페이지 제목 아래 구분선 */
     .main-content h2 {
         border-bottom: 2px solid var(--panel-bg);
         padding-bottom: 10px;
         margin-bottom: 15px;
     }
     
-    /* 🔑 수정! 관리자 메뉴 수평 정렬 래퍼 */
+    /* 🔑 관리자 메뉴 수평 정렬 */
     .main-content .menu-wrapper {
         display: flex;
         justify-content: space-around;
@@ -211,7 +213,7 @@
         margin-top: 15px;
     }
     
-    /* 🔑 추가! 버튼과 설명을 묶는 래퍼 */
+    /* 🔑 버튼과 설명 래퍼 */
     .main-content .menu-item-wrapper {
         display: flex;
         flex-direction: column;
@@ -222,9 +224,8 @@
         margin: 0;
     }
     .main-content .menu-item-wrapper > button {
-        /* 🔑 수정 2: 버튼 크기 키우기 및 중앙 정렬을 위한 스타일 */
         width: 100%;
-        max-width: 250px; /* 버튼 최대 크기 제한 */
+        max-width: 250px;
         padding: 15px 20px !important; 
         margin-bottom: 5px;
         font-size: 1.1em !important;
@@ -236,7 +237,7 @@
         line-height: 1.3;
     }
     
-    /* --------------------- 사연 듣기 화면 분할 (최종 수정) --------------------- */
+    /* --------------------- 사연 듣기 화면 분할 --------------------- */
     .story-player-area {
         display: flex;
         flex-grow: 1; 
@@ -244,9 +245,9 @@
         min-height: 300px;
     }
     
-    /* 왼쪽 3/5 영역: 스크롤 프롬프트 전용 */
+    /* 왼쪽 3/5 영역 */
     .scroll-text-box {
-        flex: 3; /* 3/5 비율 */
+        flex: 3;
         overflow-y: hidden; 
         position: relative;
         padding: 10px;
@@ -258,17 +259,22 @@
         flex-direction: column;
     }
     
-    /* 🔑 최종 수정: 텍스트가 컨테이너 바닥에서 나타나도록 설정 */
+    /* 🔑 스크롤 텍스트: 폰트크기 !important 제거 + 왼쪽으로 10px 이동 + 줄바꿈 허용 + 지속시간 변수 사용 */
     .story-text-scrolling { 
         position: absolute; 
         width: 100%; 
-        font-size: 2.4em !important; 
         color: var(--dark-wood); 
         text-align: center; 
         top: 100%; 
+        left: -10px;              /* ✅ 요청: 왼쪽으로 10px 이동 */
         padding: 0 10px; 
-        animation: scrollUp 45s linear forwards; 
+        white-space: pre-wrap;    /* ✅ 요청: 줄바꿈 처리 */
+        animation: scrollUp var(--scrollDur) linear forwards; 
     }
+
+    /* 글씨 크기 토글용 클래스 */
+    .size-small{ font-size: 1.2em; }   /* ✅ a(기본) */
+    .size-large{ font-size: 2.4em; }   /* ✅ A(현재와 동일) */
 
     @keyframes scrollUp {
         0% { transform: translateY(0); }
@@ -278,11 +284,10 @@
     /* 텍스트 박스 안의 제목과 안내 문구 높이 고정 */
     .scroll-text-box h2,
     .scroll-text-box p#playerArea {
-        flex-shrink: 0; /* 높이가 줄어들지 않도록 고정 */
+        flex-shrink: 0;
         margin-top: 5px;
         margin-bottom: 5px;
     }
-    /* 🔑 추가: 스크롤 컨테이너가 남은 공간을 모두 차지하도록 함 */
     .story-scroll-container {
         flex-grow: 1;
         overflow: hidden; 
@@ -290,21 +295,22 @@
         padding: 10px 0; 
     }
 
-    /* 오른쪽 2/5 영역: 유튜브 플레이어 및 버튼 */
+    /* 오른쪽 2/5 영역 */
     .youtube-panel {
-        flex: 2; /* 2/5 비율 */
+        flex: 2;
         display: flex;
         flex-direction: column; 
         padding: 10px;
         height: 100%;
     }
     
-    /* 상단 버튼 영역 (가로 나열) */
+    /* 상단 버튼 영역 */
     .playback-controls {
         display: flex;
         justify-content: center;
         gap: 15px;
         margin-bottom: 15px;
+        flex-wrap: wrap;
     }
 
     /* 재생/랜덤 버튼 스타일 */
@@ -324,16 +330,14 @@
         justify-content: center;
         align-items: center;
     }
-
     .icon-button:hover {
         background-color: #331f1d;
     }
-    /* 셔플 아이콘 폰트 설정 (HTML 엔티티 사용) */
     .icon-button[title="랜덤 재생"] {
         font-family: Arial, sans-serif !important; 
     }
 
-    /* 하단 유튜브 영상 영역 */
+    /* 하단 유튜브 영역 */
     .youtube-box {
         position: relative; 
         flex-grow: 1; 
@@ -344,15 +348,43 @@
         min-height: 150px; 
         transition: opacity 0.3s;
     }
-    
     #youtubePlayer {
         width: 100%;
-        height: 150px; /* 높이 150px로 조정 */
+        height: 150px;
         max-height: 100%;
         z-index: 1; 
     }
     
-    /* --------------------- 폼 입력 필드 복구 (최종 복구) --------------------- */
+    /* ----- 글씨 크기 토글 버튼 (a / A) ----- */
+    .font-toggle {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      margin-left: 12px;
+    }
+    .font-btn{
+      min-width: 36px;
+      height: 36px;
+      border: 2px solid var(--panel-bg);
+      border-radius: 5px;
+      background: #fff;                 /* 기본 흰색 */
+      color: var(--dark-wood);
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      transition: background-color .15s ease, transform .05s ease;
+    }
+    .font-btn:active{ transform: scale(0.98); }
+    .font-btn.active{
+      background: var(--dial-color);     /* ✅ 활성 시 연노랑 */
+      /* 테두리는 그대로 유지 */
+    }
+
+    /* --------------------- 폼 입력 필드 --------------------- */
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--dark-wood); }
     
@@ -371,13 +403,12 @@
       box-sizing: border-box; 
     }
     
-    /* --------------------- 중앙 하단 버튼 (QR, HOME, BACK) 스타일 변경 */
+    /* --------------------- 중앙 하단 버튼 (QR, HOME, BACK) --------------------- */
     .center-buttons {
         display: flex;
         gap: 10px;
-        margin-top: 15px; /* 주파수 창과 버튼 간 간격 확보 */
+        margin-top: 15px;
     }
-
     .center-buttons button {
         padding: 5px 10px;
         background-color: var(--dial-color); 
@@ -389,7 +420,7 @@
         font-weight: bold; 
     }
     
-    /* --------------------- QR 코드 위치 및 크기 조정 */
+    /* --------------------- QR 코드 --------------------- */
     .qr-size {
         width: 135px !important; 
         height: 135px !important;
@@ -401,7 +432,7 @@
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     }
     
-    /* --------------------- 팝업 스타일 복구 (Position: fixed) */
+    /* --------------------- 팝업 (fixed) --------------------- */
     .modal-overlay {
         position: fixed !important; 
         top: 0;
@@ -409,18 +440,15 @@
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.6);
-        display: none; /* 🔑 수정: 기본 숨김 (클래스 토글로 제어) */
+        display: none;
         justify-content: center;
         align-items: center;
         z-index: 1000;
     }
-    /* 🔑 추가: 모달 표시 상태 (JS에서 .show 클래스 추가/제거) */
-    .modal-overlay.show {
-        display: flex !important; 
-    }
+    .modal-overlay.show { display: flex !important; }
 
     .modal-content {
-        background-color: var(--screen-bg); /* 팝업 배경색을 흰색 계열로 변경 */
+        background-color: var(--screen-bg);
         border: 8px solid var(--dark-wood);
         border-radius: 15px;
         padding: 30px;
@@ -430,7 +458,6 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         font-family: var(--gowun-dodum) !important; 
     }
-
     .modal-content h3 {
         color: var(--dark-wood);
         font-size: 1.5em;
@@ -438,7 +465,6 @@
         padding-bottom: 10px;
         margin-top: 0;
     }
-
     .modal-content strong {
         color: #d90000; 
         font-size: 1.2em;
@@ -447,7 +473,7 @@
         font-family: var(--gowun-dodum) !important; 
     }
     
-    /* --------------------- 기타 스타일 (이전과 동일) --------------------- */
+    /* --------------------- 기타 스타일 --------------------- */
     .control-panel {
         display: flex;
         align-items: center;
@@ -458,7 +484,6 @@
         padding: 15px;
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
     }
-    
     .dial-control {
         display: flex; 
         flex-direction: column;
@@ -467,11 +492,7 @@
         width: 100px; 
         margin: 0 10px;
     }
-    
-    .dial-button-group {
-        display: none; 
-    }
-    
+    .dial-button-group { display: none; }
     .radio-dial {
       width: 70px;
       height: 70px;
@@ -491,11 +512,7 @@
       line-height: 1.2; 
       font-size: 0.85em; 
     }
-
-    .radio-dial:hover {
-      background-color: #fff8e8;
-    }
-    
+    .radio-dial:hover { background-color: #fff8e8; }
     .dummy-dial-label {
         font-size: 0.7em;
         color: var(--dial-color);
@@ -510,7 +527,6 @@
         align-items: center;
         padding: 0 10px;
     }
-
     .frequency-display-inner {
       position: relative; 
       width: 90%;
@@ -526,7 +542,7 @@
       box-shadow: inset 0 0 5px rgba(255, 215, 0, 0.5);
       overflow: hidden;
     }
-    
+
     .app-footer {
         margin-top: 20px;
         color: #aaaaaa; 
@@ -540,17 +556,13 @@
         font-size: 0.85em;
         border: 1px solid #ddd;
     }
-
     .story-table th, .story-table td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
         font-family: var(--gowun-dodum) !important; 
     }
-
-    .story-table td[title] {
-        cursor: help; 
-    }
+    .story-table td[title] { cursor: help; }
 
     .button-group button { 
         background-color: var(--dark-wood) !important; 
@@ -564,6 +576,32 @@
         transition: background-color 0.1s;
     }
 
+/* ===== 관리 화면 상태 컬러 & 글로우 ===== */
+.story-table td[class^="status-"]{
+  font-weight: 700;
+  text-align: center;
+  border-left: 4px solid transparent;
+  transition: background-color .2s ease, box-shadow .2s ease, color .2s ease;
+}
+
+/* Approved = 초록 */
+.story-table td.status-approved{
+  color: #0f5132;                                 /* 글자색 */
+  text-shadow: 0 0 6px rgba(25,135,84,0.45);      /* 글자 글로우 */
+}
+
+/* Pending = 노랑 */
+.story-table td.status-pending{
+  color: #664d03;
+  text-shadow: 0 0 6px rgba(255,193,7,0.5);
+}
+
+/* Rejected = 빨강 */
+.story-table td.status-rejected{
+  color: #842029;
+  text-shadow: 0 0 6px rgba(220,53,69,0.45);
+}
+
   </style>
 </head>
 <body>
@@ -574,7 +612,7 @@
       <div class="radio-screen" id="radioScreen">
         <div class="main-content" id="mainContent">
             <h2 class="content-title">✨ 라디오는 사연을 싣고 ✨</h2>
-            <p>하단 다이얼을 눌러 원하는 기능을 선택해 주세요!</p>
+            <p>아래 다이얼을 눌러 원하는 기능을 선택해 주세요!</p>
             <p>📝 사연 쓰기 : 사연을 적고 제출할 수 있어요.</p>
             <p>🔑 사연 관리 : 라디오를 개설하고 사연을 불러올 수 있어요.</p>
         </div>
@@ -652,7 +690,10 @@
   const pageHistory = [];
   const MAX_HISTORY_SIZE = 5;
 
-  // Worker 통신 함수 (이전과 동일)
+  // ===== 글씨 크기 토글 상태 (기본 a) =====
+  let textSizeMode = 'small';
+
+  // Worker 통신 함수
   async function callWorker(action, data = {}) {
       try {
           const response = await fetch(WORKER_API_ENDPOINT, {
@@ -672,18 +713,14 @@
       }
   }
   
-  // --------------------- 동적 로딩 애니메이션 로직 (이전과 동일) ---------------------
+  // --------------------- 동적 로딩 애니메이션 ---------------------
   let loadingInterval;
 
-  /**
-   * 주파수 창에 동적 로딩 메시지를 표시합니다.
-   * @param {string} baseMessage - 기본 메시지 ("PIN 검증 중" 등)
-   */
   function startLoadingAnimation(baseMessage) {
       stopLoadingAnimation(); 
       
       let dots = 1;
-      const loadingTitle = 'loading'; // 🔑 수정: [loading]으로 통일
+      const loadingTitle = 'loading';
       
       loadingInterval = setInterval(() => {
           let dotString = '.'.repeat(dots);
@@ -693,12 +730,9 @@
           if (dots > 3) {
               dots = 1;
           }
-      }, 500); // 0.5초마다 업데이트
+      }, 500);
   }
 
-  /**
-   * 동적 로딩 애니메이션을 중지하고, 주파수 창을 원래대로 되돌립니다.
-   */
   function stopLoadingAnimation() {
       if (loadingInterval) {
           clearInterval(loadingInterval);
@@ -706,31 +740,68 @@
       }
   }
 
-  // --------------------- 팝업 (모달) 관리 기능 (이전과 동일) ---------------------
-
+  // --------------------- 팝업 (모달) ---------------------
   function showModal(title, pin, password) {
       document.getElementById('modalTitle').textContent = title;
-      // 🔑 수정: 줄바꿈 적용
       document.getElementById('modalMessage').innerHTML = '학생 접속 및 관리자 로그인을 위해<br>다음 정보를 꼭 저장해 주세요!';
       document.getElementById('modalPin').textContent = pin;
       document.getElementById('modalPassword').textContent = password;
-      
-      // 🔑 수정! 클래스 추가로 팝업 표시
       document.getElementById('resultModalOverlay').classList.add('show');
   }
-
   function closeModal() {
-      // 🔑 수정! 클래스 제거로 팝업 숨김
       document.getElementById('resultModalOverlay').classList.remove('show');
       loadContent('manage_menu'); 
   }
 
+  // --------------------- 글씨 크기 토글 로직 ---------------------
+  function initFontToggleListeners(){
+    const sm = document.getElementById('fontSmallBtn');
+    const lg = document.getElementById('fontLargeBtn');
+    if(!sm || !lg) return;
+    // 기본 활성 표시 (a)
+    sm.classList.add('active');
 
-  // --------------------- 페이지 로드 함수 (이전과 동일) ---------------------
+    sm.onclick = () => setTextSize('small');
+    lg.onclick = () => setTextSize('large');
+  }
 
-  /**
-   * 새로운 콘텐츠를 로드하고 내부 히스토리를 관리합니다.
-   */
+  function setTextSize(mode){
+    textSizeMode = (mode === 'large') ? 'large' : 'small';
+    const sm = document.getElementById('fontSmallBtn');
+    const lg = document.getElementById('fontLargeBtn');
+    if(sm && lg){
+      sm.classList.toggle('active', textSizeMode==='small');
+      lg.classList.toggle('active', textSizeMode==='large');
+    }
+    applyTextSize(true); // 스크롤 진행 중에도 최대한 자연스럽게 유지
+  }
+
+  function applyTextSize(preserveProgress){
+    const el = document.getElementById('scrollingText');
+    if(!el) return;
+
+    // 현재 진행 시간 추정(Web Animations API)
+    let elapsed = 0; // 초
+    if (preserveProgress && el.getAnimations) {
+      const anim = el.getAnimations()[0];
+      if (anim && typeof anim.currentTime === 'number') {
+        elapsed = anim.currentTime / 1000;
+      }
+    }
+
+    // 크기 클래스 적용
+    el.classList.remove('size-small','size-large');
+    el.classList.add(textSizeMode === 'large' ? 'size-large' : 'size-small');
+
+    // 애니메이션을 동일 진행도로 재개(음수 delay 활용)
+    const dur = getComputedStyle(el).getPropertyValue('--scrollDur') || '57s';
+    el.style.animation = 'none';
+    void el.offsetWidth; // reflow
+    el.style.animation = `scrollUp ${dur.trim()} linear forwards`;
+    el.style.animationDelay = (elapsed > 0) ? `${-elapsed}s` : '0s';
+  }
+
+  // --------------------- 페이지 로드 함수 ---------------------
   function loadContent(page, skipHistory = false) {
     let html = '';
     
@@ -739,27 +810,20 @@
     if (!skipHistory) {
         if (pageHistory.length === 0 || pageHistory[pageHistory.length - 1] !== page) {
              pageHistory.push(page);
-             if (pageHistory.length > MAX_HISTORY_SIZE) {
-                 pageHistory.shift(); 
-             }
+             if (pageHistory.length > MAX_HISTORY_SIZE) pageHistory.shift(); 
         }
-       
-       history.replaceState({ page: page }, null, `#${page}`);
+        history.replaceState({ page: page }, null, `#${page}`);
     }
 
-
     if (page === 'welcome') {
-        // 🔑 타이틀 수정
         frequencyDisplay.textContent = '📻 라디오는 사연을 싣고 - 환영합니다!';
     } else {
         frequencyDisplay.textContent = `📻 [${getChannelTitle(page)}] 채널`;
     }
     
-    // radioScreen의 flex-direction을 column으로 유지 (mainContent가 height: 100%를 가지도록 함)
     radioScreen.style.flexDirection = 'column'; 
     
     switch (page) {
-      
       case 'welcome':
         html = `
           <h2 class="content-title">✨ 라디오는 사연을 싣고 ✨</h2>
@@ -773,21 +837,26 @@
         if (!currentChannelPin || !currentChannelName) {
             html = `<p style="color: red;">🎶 사연 듣기는 관리자 채널 로그인 후 접근할 수 있습니다. 🔑</p>`;
         } else {
-            // 🔑 수정: 사연 듣기 화면 레이아웃 HTML
             html = `
               <div class="story-player-area">
                 <div class="scroll-text-box">
                     <h2 class="content-title">🎶 사연 듣기</h2> 
                     <p id="playerArea" style="margin-top: 10px;">재생 버튼을 눌러주세요.</p>
                     <div class="story-scroll-container">
-                        <p id="scrollingText" class="story-text-scrolling"></p>
+                        <p id="scrollingText" class="story-text-scrolling size-small"></p>
                     </div>
                 </div>
                 
                 <div class="youtube-panel">
                     <div class="playback-controls">
                         <button class="icon-button" title="순차 재생" onclick="playStories('sequential')">&#9654;</button>
-                        <button class="icon-button" title="랜덤 재생" onclick="playStories('random')">&#8644;</button> 
+                        <button class="icon-button" title="랜덤 재생" onclick="playStories('random')">&#8644;</button>
+
+                        <!-- ✅ 글씨 크기 토글 -->
+                        <div class="font-toggle">
+                          <button id="fontSmallBtn" class="font-btn">a</button>
+                          <button id="fontLargeBtn" class="font-btn">A</button>
+                        </div>
                     </div>
 
                     <div id="currentStoryInfo"></div>
@@ -903,7 +972,6 @@
         `;
         break;
       
-      // 🔑 추가! 사연 듣기 전용 로그인 페이지
       case 'login_listen':
         html = `
           <h2 class="content-title">🔒 사연 듣기 채널 (연결)</h2> 
@@ -922,7 +990,6 @@
         `;
         break;
 
-
       case 'manage_stories':
         html = `<h2 class="content-title">⚠️ 오류: 잘못된 접근</h2>`;
         break;
@@ -930,7 +997,7 @@
       case 'list_stories':
         html = `<h2 class="content-title">📝 [${currentChannelName}] 사연 목록</h2>
                 <div id="storyListArea"><p>사연 목록을 불러오는 중...</p></div>`;
-        setTimeout(fetchStoriesForManagement, 50); // 50ms 지연 후 호출
+        setTimeout(fetchStoriesForManagement, 50);
         break;
       
       case 'qrcode':
@@ -955,6 +1022,11 @@
     
     mainContent.innerHTML = html; 
     
+    // ✅ listen 화면 렌더 직후 글자 토글 연결
+    if (page === 'listen') {
+      setTimeout(initFontToggleListeners, 0);
+    }
+
     // 이벤트 리스너 설정
     if (page === 'write' || page === 'pin_entry') {
         setupStoryFormListeners();
@@ -965,7 +1037,7 @@
     } 
   }
 
-  // --------------------- BACK (뒤로가기) 기능 (이전과 동일) ---------------------
+  // --------------------- BACK (뒤로가기) 기능 ---------------------
   function goBack() {
       if (pageHistory.length > 1) {
           pageHistory.pop(); 
@@ -976,29 +1048,26 @@
       }
   }
   
-  // --------------------- QR 코드 생성 로직 (이전과 동일) ---------------------
+  // --------------------- QR 코드 생성 ---------------------
   function showQrCode() {
       loadContent('qrcode');
       frequencyDisplay.textContent = '📻 [QR CODE] - 접속 주파수';
   }
-
   function generateQrCode() {
       const url = window.location.href.split('#')[0]; 
       const qrcodeElement = document.getElementById('qrcode');
-      
       qrcodeElement.innerHTML = ''; 
-      
       new QRCode(qrcodeElement, {
           text: url,
-          width: 135, // 🔑 수정: 크기 1.5배 적용
-          height: 135, // 🔑 수정: 크기 1.5배 적용
+          width: 135,
+          height: 135,
           colorDark : "#000000",
           colorLight : "#ffffff",
           correctLevel : QRCode.CorrectLevel.H
       });
   }
 
-  // --------------------- getChannelTitle 함수 (이전과 동일) ---------------------
+  // --------------------- getChannelTitle ---------------------
   function getChannelTitle(page) {
     switch (page) {
         case 'listen': return 'ON AIR';
@@ -1015,7 +1084,7 @@
     }
   }
 
-  // --------------------- YouTube 검색 로직 (이전과 동일) ---------------------
+  // --------------------- YouTube 검색 ---------------------
   let searchResultsData = [];
 
   async function handleSearch() {
@@ -1042,18 +1111,16 @@
           displayResults(res.results);
       } else {
           resultsContainer.innerHTML = `<li>🐛 검색 결과가 없습니다. URL을 직접 입력하거나 검색어를 다시 시도하세요.</li>`;
-          storyUrlInput.value = ''; // URL 필드 초기화
+          storyUrlInput.value = '';
       }
   }
 
   function displayResults(results) {
       const resultsContainer = document.getElementById('searchResults');
       let html = '';
-
       results.forEach((item, index) => {
           html += `<li onclick="selectSong(${index})">🎵 ${item.title}</li>`;
       });
-      
       resultsContainer.innerHTML = html;
   }
 
@@ -1061,19 +1128,15 @@
       const selected = searchResultsData[index];
       const storyUrlInput = document.getElementById('storyUrl');
       const resultsContainer = document.getElementById('searchResults');
-      
-      // 사연 제출 폼에 URL 자동 입력
       storyUrlInput.value = selected.url;
-      
-      // 검색 결과 목록 숨기기
       resultsContainer.innerHTML = `<li>✅ ${selected.title} 선택 완료!</li>`;
   }
   
-  // --------------------- 사연 쓰기 - 핀 번호 검증 로직 (이전과 동일) ---------------------
+  // --------------------- 사연 쓰기 - 핀 검증 ---------------------
   function setupStoryFormListeners() {
     const pinForm = document.getElementById('pinForm');
     const storyFormContainer = document.getElementById('writeForm');
-    const storyForm = document.getElementById('storyForm'); // 사연 제출 폼 자체
+    const storyForm = document.getElementById('storyForm');
     
     pinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1082,7 +1145,7 @@
         const submissionStatus = document.getElementById('submissionStatus');
         
         startLoadingAnimation('PIN 검증 중');
-        submissionStatus.textContent = ''; 
+        submissionStatus.textContent = '';
         
         const res = await callWorker('getChannelInfoByPin', { pin });
         
@@ -1092,10 +1155,9 @@
             currentChannelPin = pin;
             currentChannelName = res.channelName;
             
-            pinForm.style.display = 'none'; 
-            storyFormContainer.style.display = 'block'; 
+            pinForm.style.display = 'none';
+            storyFormContainer.style.display = 'block';
             
-            // 🚨 무한 루프 오류 수정 적용
             pageHistory.push('write');
             history.replaceState({ page: 'write' }, null, `#write`);
             frequencyDisplay.textContent = `📻 [${currentChannelName}] 주파수 일치! 사연 제출 준비!`;
@@ -1104,7 +1166,7 @@
 
             if (isStorySubmitted) {
                 storyForm.style.display = 'none';
-                submissionStatus.textContent = '사연은 한 번만 제출할 수 있습니다.'; // 🔑 수정: 이모지 삭제
+                submissionStatus.textContent = '사연은 한 번만 제출할 수 있습니다.';
             } else {
                 storyForm.style.display = 'block';
                 submissionStatus.textContent = '';
@@ -1119,7 +1181,7 @@
     storyForm.addEventListener('submit', handleStorySubmit);
   }
 
-  // --------------------- 사연 제출 로직 (이전과 동일) ---------------------
+  // --------------------- 사연 제출 ---------------------
   async function handleStorySubmit(e) {
     e.preventDefault();
     if (isStorySubmitted || !currentChannelPin) {
@@ -1132,7 +1194,7 @@
     const url = document.getElementById('storyUrl').value;
     const statusDiv = document.getElementById('submissionStatus');
     
-    startLoadingAnimation('사연 제출 중'); 
+    startLoadingAnimation('사연 제출 중');
     statusDiv.textContent = '제출 중... 잠시만 기다려주세요.';
 
     const res = await callWorker('submitStory', { 
@@ -1153,7 +1215,7 @@
     }
   }
   
-  // --------------------- 채널 생성 로직 (이전과 동일) ---------------------
+  // --------------------- 채널 생성 ---------------------
   async function handleCreateChannel(e) {
       e.preventDefault();
       const channelName = document.getElementById('channelName').value;
@@ -1181,13 +1243,13 @@
               res.pin, 
               teacherPassword
           );
-          createStatus.textContent = ''; // 원래 메시지 영역 비우기
+          createStatus.textContent = '';
       } else {
           createStatus.textContent = `🐛 채널 생성 오류: ${res.message}`;
       }
   }
   
-  // --------------------- 교사 관리 로그인 로직 (이전과 동일) ---------------------
+  // --------------------- 교사 관리 로그인 ---------------------
   async function handleManageLogin(e, loginType) {
       e.preventDefault();
       const pin = document.getElementById('managerPin').value;
@@ -1195,43 +1257,36 @@
       const loginStatus = document.getElementById('manageLoginStatus');
       
       startLoadingAnimation('로그인 중');
-      loginStatus.textContent = '로그인 시도 중...';
+      loginStatus.textContent = '로그인 중...';
       
       const authRes = await callWorker('getAllStories', { pin, password }); 
       
       stopLoadingAnimation(); 
 
-      if (authRes.success || authRes.message.includes('제출된 사연이 없습니다')) { 
-          
+      if (authRes.success || (authRes.message && authRes.message.includes('제출된 사연이 없습니다'))) { 
           const channelInfo = await callWorker('getChannelInfoByPin', { pin });
-          
           if (channelInfo.success) {
             currentChannelName = channelInfo.channelName;
             currentChannelPin = pin; 
             managerPassword = password; 
-            
             loginStatus.textContent = `로그인 성공! [${currentChannelName}] 채널 연결 완료. 😊`;
-            
             setTimeout(() => {
                 if (loginType === 'login_listen') {
-                    loadContent('listen'); // 사연 듣기 화면으로 이동
+                    loadContent('listen');
                 } else {
-                    loadContent('list_stories'); // 사연 목록 관리 화면으로 바로 이동
+                    loadContent('list_stories');
                 }
             }, 500);
-
           } else {
             loginStatus.textContent = `인증 실패: ${channelInfo.message}`;
           }
-
       } else {
           loginStatus.textContent = `인증 실패: ${authRes.message}`;
       }
   }
 
-  // --------------------- 사연 관리 목록 및 승인 로직 (이전과 동일) ---------------------
+  // --------------------- 사연 관리 목록 및 승인 ---------------------
   async function fetchStoriesForManagement() {
-      
       if (!currentChannelPin || !managerPassword) {
           document.getElementById('storyListArea').innerHTML = '<p style="color: red;">인증 정보가 없습니다. 다시 로그인해 주세요.</p>';
           return;
@@ -1251,7 +1306,6 @@
 
       if (res.success) {
           const stories = res.stories;
-          
           if (stories.length === 0) {
               storyListArea.innerHTML = `<p>아직 제출된 사연이 없습니다. 📝</p>`;
               return;
@@ -1264,7 +1318,8 @@
                     <tr>
                         <th>날짜</th>
                         <th>이름</th>
-                        <th><span title="마우스를 올리면 전체 내용이 보입니다.">사연 (앞 15자)</span></th> <th>URL</th>
+                        <th><span title="마우스를 올리면 전체 내용이 보입니다.">사연 (앞 15자)</span></th>
+                        <th>URL</th>
                         <th>상태</th>
                         <th>승인/거절</th>
                     </tr>
@@ -1274,7 +1329,6 @@
           stories.forEach(story => {
               let statusText = story.status;
               let statusClass;
-              
               if (story.isPlayed) {
                   statusClass = 'status-approved';
                   statusText += ' (완료)';
@@ -1289,7 +1343,8 @@
                   <tr>
                       <td>${formattedDate}</td>
                       <td>${story.name}</td>
-                      <td title="${story.content}" class="story-content-cell">${contentSnippet}</td> <td><a href="${story.youtubeUrl}" target="_blank">링크</a></td>
+                      <td title="${story.content}" class="story-content-cell">${contentSnippet}</td>
+                      <td><a href="${story.youtubeUrl}" target="_blank">링크</a></td>
                       <td class="${statusClass}">${statusText}</td>
                       <td>
                           <select name="status_${story.rowNum}" data-row="${story.rowNum}" class="status-select">
@@ -1308,8 +1363,6 @@
                       </form>`;
         
         storyListArea.innerHTML = tableHtml;
-        
-        // 🔑 이벤트 리스너: 폼 제출 시 handleBulkSave 함수 호출
         document.getElementById('bulkUpdateForm').addEventListener('submit', handleBulkSave);
 
       } else {
@@ -1317,32 +1370,22 @@
       }
   }
   
-  /**
-   * 🔑 추가! 폼 데이터를 수집하고 서버에 일괄 업데이트 요청을 보냅니다.
-   */
   async function handleBulkSave(e) {
       e.preventDefault();
-      
       if (!currentChannelPin || !managerPassword) {
           alert('채널 인증 정보가 유효하지 않습니다.');
           return;
       }
-      
-      if (!confirm('변경된 상태를 서버에 일괄 저장하시겠습니까?')) {
-          return;
-      }
+      if (!confirm('변경된 상태를 서버에 일괄 저장하시겠습니까?')) return;
 
       const form = e.target;
       const selectElements = form.querySelectorAll('.status-select');
       const updates = [];
-      
       let isChanged = false;
       
       selectElements.forEach(select => {
-          // 첫 번째 옵션이 현재 상태(이전 상태)입니다.
           const initialStatus = select.options[0].value; 
           const newStatus = select.value;
-          
           if (initialStatus !== newStatus) {
               updates.push({
                   rowNum: parseInt(select.dataset.row),
@@ -1361,7 +1404,6 @@
       saveButton.textContent = '저장 중...';
       saveButton.disabled = true;
 
-      // 서버에 일괄 업데이트 요청
       const res = await callWorker('bulkUpdateStories', {
           pin: currentChannelPin,
           password: managerPassword,
@@ -1373,21 +1415,15 @@
       } else {
           alert(`🐛 일괄 저장 실패: ${res.message}`);
       }
-
-      // 목록 새로고침
       fetchStoriesForManagement(); 
   }
 
   async function updateStoryStatus(rowNum, newStatus) {
-      if (!confirm(`행 번호 ${rowNum}의 사연을 '${newStatus}' 상태로 변경하시겠습니까?`)) {
-          return;
-      }
-      
+      if (!confirm(`행 번호 ${rowNum}의 사연을 '${newStatus}' 상태로 변경하시겠습니까?`)) return;
       if (!managerPassword) {
          alert('관리자 비밀번호 정보가 유실되었습니다. 다시 로그인해 주세요.');
          return;
       }
-
       const res = await callWorker('updateStoryStatus', {
           rowNum, 
           newStatus, 
@@ -1403,7 +1439,12 @@
       }
   }
 
-  // --------------------- 사연 듣기 로직 (이전과 동일) ---------------------
+  // --------------------- 사연 듣기 ---------------------
+  let storyData = [];
+  let currentStoryIndex = -1;
+  let playMode = 'random';
+  let player;
+
   async function playStories(mode) {
       if (!currentChannelPin) {
           alert('채널 정보가 유효하지 않습니다.');
@@ -1413,7 +1454,7 @@
       
       const playerArea = document.getElementById('mainContent').querySelector('.scroll-text-box #playerArea');
       if (playerArea) {
-        playerArea.innerHTML = `<p>사연을 불러오는 중...</p>`; // 🔑 수정: 로딩 문구 단순화
+        playerArea.innerHTML = `<p>사연을 불러오는 중...</p>`;
       }
       
       startLoadingAnimation('사연 로드 중'); 
@@ -1435,21 +1476,25 @@
               return;
           }
 
-          // 🔑 수정: HTML 구조를 변경하여 플레이어와 스크롤 텍스트를 분리
+          // 재생 화면 다시 렌더 (토글 버튼 포함)
           mainContent.innerHTML = `
               <div class="story-player-area">
                 <div class="scroll-text-box">
                     <h2 class="content-title">🎶 사연 듣기</h2> 
                     <p id="playerArea" style="margin-top: 10px;">재생 버튼을 눌러주세요.</p>
                     <div class="story-scroll-container">
-                        <p id="scrollingText" class="story-text-scrolling"></p>
+                        <p id="scrollingText" class="story-text-scrolling size-small"></p>
                     </div>
                 </div>
                 
                 <div class="youtube-panel">
                     <div class="playback-controls">
                         <button class="icon-button" title="순차 재생" onclick="playStories('sequential')">&#9654;</button>
-                        <button class="icon-button" title="랜덤 재생" onclick="playStories('random')">&#8644;</button> 
+                        <button class="icon-button" title="랜덤 재생" onclick="playStories('random')">&#8644;</button>
+                        <div class="font-toggle">
+                          <button id="fontSmallBtn" class="font-btn">a</button>
+                          <button id="fontLargeBtn" class="font-btn">A</button>
+                        </div>
                     </div>
 
                     <div id="currentStoryInfo"></div>
@@ -1461,18 +1506,17 @@
               </div>
           `;
           
+          // 토글 리스너 연결 및 현재 모드 적용
+          setTimeout(() => {
+            initFontToggleListeners();
+            applyTextSize(false);
+          }, 0);
+
           loadYoutubeAPI();
       } else {
           mainContent.innerHTML = `<p style="color: red;">🐛 사연을 불러오지 못했습니다: ${res.message}</p>`;
       }
   }
-  
-  // (이하 Youtube 관련 변수 및 함수는 이전과 동일)
-  let storyData = [];
-  let currentStoryIndex = -1;
-  let playMode = 'random';
-  let player;
-
 
   function loadYoutubeAPI() {
       if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
@@ -1486,7 +1530,6 @@
       }
   }
 
-
   function onYouTubeIframeAPIReady() {
       const youtubeBox = document.getElementById('youtubePlayer');
       if (!youtubeBox) {
@@ -1498,13 +1541,13 @@
           height: '100%',
           width: '100%',
           playerVars: {
-              'rel': 0, // 관련 동영상 숨기기
-              'modestbranding': 1, // YouTube 로고 축소
-              'autoplay': 1, // 자동 재생 시도
-              'disablekb': 1, // 키보드 컨트롤 비활성화
-              'iv_load_policy': 3, // 동영상 주석 비활성화
-              'showinfo': 0, // 동영상 정보 표시 비활성화
-              'cc_load_policy': 1 // 캡션 표시 시도
+              'rel': 0,
+              'modestbranding': 1,
+              'autoplay': 1,
+              'disablekb': 1,
+              'iv_load_policy': 3,
+              'showinfo': 0,
+              'cc_load_policy': 1
           },
           events: {
               'onReady': onPlayerReady,
@@ -1518,10 +1561,9 @@
   }
 
   function onPlayerStateChange(event) {
-      if (event.data === 0) { // ENDED (재생 종료)
+      if (event.data === 0) { // ENDED
           if (currentStoryIndex !== -1 && storyData[currentStoryIndex]) {
               const story = storyData[currentStoryIndex];
-              
               callWorker('setStoryPlayed', { 
                   pin: currentChannelPin, 
                   rowNum: story.rowNum 
@@ -1540,18 +1582,14 @@
                playNextStory(); 
           }
       }
-      // 🔑 수정 9: 동영상 로딩 완료(1) 또는 재생 중(3)일 때 재생 이력 즉시 업데이트
-      if (event.data === 1) { // STARTED (재생 시작 직후)
+      if (event.data === 1) { // STARTED
           if (currentStoryIndex !== -1 && storyData[currentStoryIndex]) {
               const story = storyData[currentStoryIndex];
-              
               const storyInfoElement = document.getElementById('currentStoryInfo');
               if (storyInfoElement) {
                 const totalRemaining = storyData.length;
-                storyInfoElement.textContent = `${totalRemaining}개 사연 중 ${currentStoryIndex + 1}번째 재생 중`; // 🔑 수정: '예정' 문구 제거
+                storyInfoElement.textContent = `${totalRemaining}개 사연 중 ${currentStoryIndex + 1}번째 재생 중`;
               }
-              
-              // 재생 시작 시점에 바로 Played 상태를 업데이트합니다.
               callWorker('setStoryPlayed', { 
                   pin: currentChannelPin, 
                   rowNum: story.rowNum 
@@ -1567,29 +1605,23 @@
 
   function playNextStory() {
       const storyInfoElement = document.getElementById('currentStoryInfo');
-      const totalStories = storyData.length + (currentStoryIndex !== -1 ? 1 : 0); // 현재 재생 항목을 포함한 전체 수
-
+      const totalStories = storyData.length + (currentStoryIndex !== -1 ? 1 : 0);
 
       if (storyData.length === 0) {
           const playerArea = document.getElementById('playerArea');
           playerArea.innerHTML = `<p>더 이상 읽을 사연이 없습니다! 🥳 해당 채널은 다음 날 자정 자동 삭제될 예정입니다.</p>`;
           frequencyDisplay.textContent = '📻 모든 사연 재생 완료';
           if (storyInfoElement) storyInfoElement.textContent = `0/${totalStories} 새 사연 중 0번째`;
-          if (player) {
-             player.stopVideo(); 
-          }
+          if (player) player.stopVideo();
           return;
       }
       
       let nextIndex;
-
       if (playMode === 'random') {
           nextIndex = Math.floor(Math.random() * storyData.length);
       } else { // sequential
           nextIndex = (currentStoryIndex + 1);
-          if (nextIndex >= storyData.length) {
-              nextIndex = 0;
-          }
+          if (nextIndex >= storyData.length) nextIndex = 0;
       }
       
       currentStoryIndex = nextIndex;
@@ -1598,28 +1630,28 @@
       const videoId = getYoutubeVideoId(story.youtubeUrl);
       
       if (videoId && player) {
-          // 🔑 수정 5: 광고를 고려하여 2초 지연 후 재생
           setTimeout(() => {
               player.loadVideoById(videoId);
           }, 2000); 
           
           frequencyDisplay.textContent = `🎶 ON AIR: ${story.name} 님의 사연 (채널: ${currentChannelName})`;
           
-          // 🔑 추가: 진행 상황 표시 (재생 '예정' 시점)
           if (storyInfoElement) {
               const totalRemaining = storyData.length;
               storyInfoElement.textContent = `${totalRemaining}개 사연 중 ${currentStoryIndex + 1}번째 재생 중`;
           }
 
           const scrollingText = document.getElementById('scrollingText');
-          scrollingText.textContent = `[${story.name} 님의 사연] ${story.content}`;
-          
-          // 🔑 최종 수정: 애니메이션을 초기화하고 다시 적용하여 스크롤을 바닥에서부터 시작
+          // ✅ 줄바꿈 적용: 제목 라인 + 본문
+          scrollingText.textContent = `[${story.name} 님의 사연]\n${story.content}`;
+          // 애니메이션 재적용
           scrollingText.style.animation = 'none';
-          scrollingText.style.top = '100%'; // 컨테이너 바닥에서 시작하도록 설정
-          
-          void scrollingText.offsetWidth; // Reflow 강제
-          scrollingText.style.animation = 'scrollUp 57s linear forwards'; // 🔑 수정: 57초로 변경
+          scrollingText.style.top = '100%';
+          void scrollingText.offsetWidth;
+          scrollingText.style.animation = `scrollUp var(--scrollDur) linear forwards`;
+
+          // ✅ 현재 선택된 크기 모드 반영
+          applyTextSize(false);
 
       } else {
           console.error('유효하지 않은 YouTube URL 또는 ID: ', story.youtubeUrl);
@@ -1631,7 +1663,7 @@
 
   function getYoutubeVideoId(url) {
       if (!url) return null;
-      const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|\w+\/|watch\?v=)|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-Z0-9_-]{11})/);
+      const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|\w+\/|watch\?v=)|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
       return (match && match[1]) ? match[1] : null;
   }
 
