@@ -2,6 +2,9 @@
 <html>
 <head>
     <title>라디오는 사연을 싣고</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    
     <link rel="icon" type="image/png" href="https://i.imgur.com/xgjafB5.png">
     <link rel="shortcut icon" href="https://i.imgur.com/xgjafB5.png">
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
@@ -23,12 +26,14 @@
         body {
             font-family: var(--gowun-dodum);
             margin: 0;
+            /* 🐛 [권장 C] 모바일 여백 조정 */
             padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            /* 🐛 [핵심 2] 100vh -> 100dvh로 변경 */
+            min-height: 100dvh; 
             background-color: #f4f4f4;
             transition: background-color 0.5s;
         }
@@ -45,16 +50,17 @@
         /* 메인 콘텐츠 내 h3 태그 글씨 크기 조정 */
         .main-content h3 {
             font-size: 1.3em;
-            font-weight: normal; /* 🐛 [추가] 폼 제목 볼드체 제거 */
+            font-weight: normal; 
         }
 
-
+        /* 🐛 [권장 A] 라디오 박스 비율 기반 반응형 */
         .radio-wrapper {
             position: relative;
-            width: 90vw;
-            max-width: 800px;
-            height: 60vw;
-            max-height: 600px;
+            /* width: 90vw; max-width: 800px; height: 60vw; max-height: 600px; */
+            width: min(95vw, 800px);
+            aspect-ratio: 4 / 3;
+            max-height: min(85vh, 600px);
+            height: auto;
             padding-top: 0;
             box-sizing: content-box;
         }
@@ -76,15 +82,22 @@
             z-index: 10;
         }
 
-        @media (max-width: 768px) {
-            .radio-wrapper {
-                width: 95vw;
+        /* 🐛 [핵심 3 + 권장 C] 모바일 및 세로로 긴 화면 대응 미디어 쿼리 */
+        @media (max-width: 768px), (max-aspect-ratio: 3/4) {
+            
+            /* 🐛 [권장 C] body/container 여백 조정 */
+            body { padding: 12px; }
+            .radio-container {
+                padding: 14px;
+                box-shadow: 0 0 0 8px var(--dark-wood), 4px 4px 12px rgba(0,0,0,.4);
                 height: auto;
             }
-            .radio-container {
-                padding: 15px;
-                box-shadow: 0 0 0 10px var(--dark-wood),
-                            5px 5px 15px rgba(0, 0, 0, 0.5);
+            
+            /* 🐛 [권장 A] 라디오 박스 비율 해제 및 너비 조정 */
+            .radio-wrapper {
+                width: 95vw;
+                aspect-ratio: auto;
+                max-height: none;
                 height: auto;
             }
 
@@ -116,11 +129,13 @@
                 align-items: center;
                 flex: 1;
             }
-
-            .dial-button-group .radio-dial {
-                width: 60px;
-                height: 60px;
-                font-size: 0.8em;
+            
+            /* 🐛 [권장 C] 다이얼 터치 타깃 확대 */
+            .dial-button-group .radio-dial,
+            .radio-dial {
+                width: 72px; 
+                height: 72px;
+                font-size: .9em;
                 margin: 5px auto;
             }
 
@@ -133,6 +148,7 @@
             .center-buttons {
                 order: 3;
                 width: 100%;
+                /* PC에서 flex-start였지만, 모바일에서는 grid로 중앙 정렬됨 */
                 justify-content: space-around;
                 margin-top: 10px;
                 display: grid;
@@ -144,6 +160,8 @@
                 font-size: 0.9em;
                 padding: 10px 5px;
                 border-radius: 8px !important;
+                /* 🐛 [권장 C] 버튼 최소 높이 확보 */
+                min-height: 44px;
             }
             
              .storyForm button[type="submit"],
@@ -182,7 +200,13 @@
             .main-content .menu-item-wrapper > p {
                 text-align: left;
             }
-        } /* @media (max-width: 768px) 끝 */
+            
+            /* 🐛 [권장 E] QR 코드 크기 폰 최적화 (360px 이하) */
+            @media (max-width: 360px) {
+                .qr-size { width: 140px !important; height: 140px !important; }
+            }
+            
+        } /* @media (max-width: 768px), (max-aspect-ratio: 3/4) 끝 */
 
         .radio-screen {
             flex: 1;
@@ -232,9 +256,8 @@
             width: 100%;
             max-width: 250px;
             padding: 15px 15px !important; 
-            /* 🐛 [수정 2]: 버튼 크기 확대 및 볼드체 제거 */
-            font-size: 1.2em !important; 
-            font-weight: bold; 
+            font-size: 1.1em !important; 
+            font-weight: normal; 
             margin-bottom: 5px;
             border-radius: 8px;
             background-color: var(--dial-color);
@@ -242,7 +265,6 @@
             border: 2px solid var(--panel-bg);
         }
         .main-content .menu-item-wrapper > p {
-            /* 🐛 [수정 1]: 관리자 메뉴 부가 설명 텍스트 크기 원래대로 축소 */
             font-size: 0.85em;
             margin: 0;
             line-height: 1.3;
@@ -272,7 +294,7 @@
             width: 100%;
             min-height: 300px;
         }
-
+        
         .scroll-text-box {
             flex: 3;
             overflow-y: hidden;
@@ -287,19 +309,26 @@
         }
 
         .story-text-scrolling {
+            will-change: transform;
             position: absolute;
             width: 100%;
             color: var(--dark-wood);
             text-align: center;
             top: 100%;
             left: -10px;
-            padding: 0 10px;
+            padding: 0 14px; 
             white-space: pre-wrap;
             animation: scrollUp var(--scrollDur) linear forwards;
         }
 
-        .size-small{ font-size: 1.2em; }
-        .size-large{ font-size: 2.4em; }
+        .size-small{ 
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            line-height: 1.35;
+        }
+        .size-large{ 
+            font-size: clamp(1.4rem, 2.5vw, 2rem);
+            line-height: 1.45;
+        }
 
         @keyframes scrollUp {
             0% { transform: translateY(0); }
@@ -326,7 +355,25 @@
             padding: 10px;
             height: 100%;
         }
-
+        .youtube-box {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            transition: opacity 0.3s;
+        }
+        #youtubePlayer, 
+        #youtubePlayer iframe {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            z-index: 1;
+            display: block;
+        }
+        
         .playback-controls {
             display: flex;
             justify-content: center;
@@ -356,23 +403,6 @@
         }
         .icon-button[title="랜덤 재생"] {
             font-family: Arial, sans-serif !important;
-        }
-
-        .youtube-box {
-            position: relative;
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            width: 100%;
-            min-height: 150px;
-            transition: opacity 0.3s;
-        }
-        #youtubePlayer {
-            width: 100%;
-            height: 150px;
-            max-height: 100%;
-            z-index: 1;
         }
 
         .font-toggle {
@@ -406,7 +436,6 @@
         .form-group label { 
             display: block; 
             margin-bottom: 5px; 
-            /* font-weight는 그대로 bold 유지 */
             font-weight: bold; 
             color: var(--dark-wood); 
             font-size: 1.1em;
@@ -429,14 +458,18 @@
             box-sizing: border-box;
         }
 
-        /* 📌 2. 제어판 버튼 스타일 (PC에서 자동 크기, 왼쪽 정렬) */
+        /* 📌 2. 제어판 버튼 스타일 */
         .center-buttons {
             display: flex;
             flex-wrap: wrap;
-            justify-content: flex-start;
+            /* 🐛 [수정]: 버튼 그룹을 수평 중앙에 위치시킴 */
+            justify-content: center; 
             gap: 10px;
             margin-top: 15px;
+            /* width: auto가 적용된 버튼들을 중앙에 모으기 위해 */
+            align-self: center; 
         }
+        
         .center-buttons button {
             flex-grow: 0;
             width: auto;
@@ -448,10 +481,10 @@
             border-radius: 8px;
             font-size: 0.9em;
             font-family: var(--gowun-dodum) !important;
-            font-weight: normal; /* 🐛 [수정]: 볼드체 제거 */
+            font-weight: normal; 
             cursor: pointer;
         }
-
+        
         /* 폼 내의 기본 버튼에도 동일한 스타일 적용 (PIN 입력 버튼, 사연 보내기, 채널 생성 버튼 등) */
         .main-content button[type="submit"],
         .modal-button {
@@ -461,7 +494,6 @@
             border: 2px solid var(--panel-bg);
             border-radius: 8px;
             font-size: 1.1em;
-            /* 🐛 [수정]: 볼드체 제거 */
             font-weight: normal;
             cursor: pointer;
             transition: background-color 0.1s;
@@ -499,19 +531,28 @@
             display: inline-block;
             border: none;
             margin-top: 5px; 
-            /* 🐛 [수정]: 볼드체 제거 */
             font-weight: normal; 
         }
 
         .qr-size {
-            width: 135px !important;
-            height: 135px !important;
-            max-width: 135px;
-            max-height: 135px;
+            width: 160px !important; 
+            height: 160px !important;
+            max-width: 160px;
+            max-height: 160px;
             background-color: white;
             padding: 10px;
             border: 1px solid #333;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content {
+            background-color: var(--screen-bg);
+            border: 8px solid var(--dark-wood);
+            border-radius: 15px;
+            padding: 30px;
+            width: min(92vw, 420px);
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            font-family: var(--gowun-dodum) !important;
         }
 
         .modal-overlay {
@@ -528,17 +569,6 @@
         }
         .modal-overlay.show { display: flex !important; }
 
-        .modal-content {
-            background-color: var(--screen-bg);
-            border: 8px solid var(--dark-wood);
-            border-radius: 15px;
-            padding: 30px;
-            width: 80%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            font-family: var(--gowun-dodum) !important;
-        }
         .modal-content h3 {
             color: var(--dark-wood);
             font-size: 1.5em;
@@ -552,7 +582,7 @@
             display: block;
             padding: 5px 0;
             font-family: var(--gowun-dodum) !important;
-            font-weight: normal; /* 🐛 [추가] 모달 내 강조 텍스트 볼드체 제거 */
+            font-weight: normal; 
         }
 
         .control-panel {
@@ -605,7 +635,8 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            /* 🐛 [수정]: 버튼을 중앙 정렬하기 위해 center로 변경 */
+            align-items: center; 
             padding: 0 10px;
         }
         .frequency-display-inner {
@@ -657,7 +688,7 @@
             text-align: center;
             transition: background-color 0.1s;
             font-size: 1.1em;
-            font-weight: normal; /* 🐛 [추가]: 볼드체 제거 */
+            font-weight: normal; 
         }
         .button-group button:hover {
             background-color: #331f1d !important;
@@ -1123,8 +1154,8 @@
         qrcodeElement.innerHTML = '';
         new QRCode(qrcodeElement, {
             text: url,
-            width: 135,
-            height: 135,
+            width: 160, // 🐛 [권장 E] QR 코드 크기
+            height: 160, // 🐛 [권장 E] QR 코드 크기
             colorDark : "#000000",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
