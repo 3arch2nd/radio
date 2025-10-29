@@ -30,6 +30,7 @@
             --retro-font: 'DungGeunMo', monospace;
             --error-color: var(--dark-wood);
             --scrollDur: 57s;
+            --app-bg: #f4f4f4;
         }
 
         body {
@@ -41,7 +42,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100dvh; 
-            background-color: #f4f4f4;
+            background-color: var(--app-bg);
             transition: background-color 0.5s;
         }
 
@@ -610,6 +611,46 @@
         .story-table td.status-approved{ color: #0f5132; text-shadow: 0 0 6px rgba(25,135,84,0.45); }
         .story-table td.status-pending{ color: #664d03; text-shadow: 0 0 6px rgba(255,193,7,0.5); }
         .story-table td.status-rejected{ color: #842029; text-shadow: 0 0 6px rgba(220,53,69,0.45); }
+
+.youtube-box{
+  position: relative;
+}
+
+.youtube-box::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+background: rgba(244,244,244,0.95);
+background: color-mix(in srgb, var(--app-bg) 95%, transparent);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 0.95em;
+  color: #333;
+  padding: 10px 16px;
+  border-radius: 6px;
+  transition: opacity .2s ease;
+  opacity: 1;
+}
+
+.youtube-box:hover::after{
+  opacity: 0;
+  pointer-events: none;
+}
+
+.youtube-box:focus-within::after{
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (hover: none) and (pointer: coarse){
+  .youtube-box::after{
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
     </style>
 </head>
 <body>
