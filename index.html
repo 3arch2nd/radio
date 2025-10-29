@@ -11,6 +11,15 @@
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <style>
 
+        /* ✅ DungGeunMo 폰트 로딩 (정상 방식: @font-face로 직접 선언) */
+        @font-face {
+            font-family: 'DungGeunMo';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap; /* 렌더링 지연 방지용 권장 옵션 */
+        }
+
         :root {
             --dark-wood: #4B2F2A;
             --mid-wood: #6D4C41;
@@ -19,6 +28,7 @@
             --screen-bg: rgba(255, 255, 255, 0.95);
             --font-color: #333;
             --gowun-dodum: 'Gowun Dodum', sans-serif;
+            --retro-font: 'DungGeunMo', monospace; 
             --error-color: var(--dark-wood);
             --scrollDur: 57s;
         }
@@ -26,7 +36,6 @@
         body {
             font-family: var(--gowun-dodum);
             margin: 0;
-            /* PC 환경에서는 20px 유지 */
             padding: 20px; 
             display: flex;
             flex-direction: column;
@@ -37,53 +46,21 @@
             transition: background-color 0.5s;
         }
 
-        h1, h2, h3, p, div, span, button, li, table {
-            font-family: var(--gowun-dodum) !important;
+        h1, h2, h3, p, div, span, button, li, table, a, select, textarea, input {
+            font-family: var(--gowun-dodum);
         }
         
-        /* 메인 콘텐츠 내 p 태그 글씨 크기 확대 (환영 메시지, 사연 쓰기 메뉴 등) */
         .main-content p {
             font-size: 1.1em; 
         }
         
-        /* 메인 콘텐츠 내 h3 태그 글씨 크기 조정 */
         .main-content h3 {
             font-size: 1.3em;
             font-weight: normal; 
         }
 
-        /* 🐛 [권장 A] 라디오 박스 비율 기반 반응형 */
-        .radio-wrapper {
-            position: relative;
-            width: min(95vw, 800px);
-            aspect-ratio: 4 / 3;
-            max-height: min(85vh, 600px);
-            height: auto;
-            padding-top: 0;
-            box-sizing: content-box;
-        }
-
-        .radio-container {
-            width: 100%;
-            height: 100%;
-            background-color: var(--mid-wood);
-            border-radius: 20px;
-            box-shadow: 0 0 0 15px var(--dark-wood),
-                        10px 10px 30px rgba(0, 0, 0, 0.5);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
-            color: var(--font-color);
-            transition: all 0.5s;
-            z-index: 10;
-        }
-
-        /* 🐛 [핵심 3 + 권장 C] 모바일 및 세로로 긴 화면 대응 미디어 쿼리 */
         @media (max-width: 768px), (max-aspect-ratio: 3/4) {
             
-            /* 🐛 [수정 사항]: body 패딩을 10px로 조정 */
             body { padding: 20px 30px; } 
             
             .radio-container {
@@ -92,7 +69,6 @@
                 height: auto;
             }
             
-            /* 🐛 [권장 A] 라디오 박스 비율 해제 및 너비 조정 */
             .radio-wrapper {
                 width: 95vw;
                 aspect-ratio: auto;
@@ -129,7 +105,6 @@
                 flex: 1;
             }
             
-            /* 🐛 [권장 C] 다이얼 터치 타깃 확대 */
             .dial-button-group .radio-dial,
             .radio-dial {
                 width: 72px; 
@@ -147,7 +122,6 @@
             .center-buttons {
                 order: 3;
                 width: 100%;
-                /* PC에서 flex-start였지만, 모바일에서는 grid로 중앙 정렬됨 */
                 justify-content: space-around;
                 margin-top: 10px;
                 display: grid;
@@ -159,7 +133,6 @@
                 font-size: 0.9em;
                 padding: 10px 5px;
                 border-radius: 8px !important;
-                /* 🐛 [권장 C] 버튼 최소 높이 확보 */
                 min-height: 44px;
             }
             
@@ -200,12 +173,38 @@
                 text-align: left;
             }
             
-            /* 🐛 [권장 E] QR 코드 크기 폰 최적화 (360px 이하) */
             @media (max-width: 360px) {
                 .qr-size { width: 140px !important; height: 140px !important; }
             }
             
-        } /* @media (max-width: 768px), (max-aspect-ratio: 3/4) 끝 */
+        }
+
+        .radio-wrapper {
+            position: relative;
+            width: min(95vw, 800px);
+            aspect-ratio: 4 / 3;
+            max-height: min(85vh, 600px);
+            height: auto;
+            padding-top: 0;
+            box-sizing: content-box;
+        }
+
+        .radio-container {
+            width: 100%;
+            height: 100%;
+            background-color: var(--mid-wood);
+            border-radius: 20px;
+            box-shadow: 0 0 0 15px var(--dark-wood),
+                                10px 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--font-color);
+            transition: all 0.5s;
+            z-index: 10;
+        }
 
         .radio-screen {
             flex: 1;
@@ -262,6 +261,8 @@
             background-color: var(--dial-color);
             color: var(--dark-wood);
             border: 2px solid var(--panel-bg);
+            /* 폰트 통일 유지 */
+            font-family: var(--gowun-dodum) !important;
         }
         .main-content .menu-item-wrapper > p {
             font-size: 0.85em;
@@ -401,7 +402,7 @@
             background-color: #331f1d;
         }
         .icon-button[title="랜덤 재생"] {
-            font-family: Arial, sans-serif !important;
+            font-family: Arial, sans-serif !important; 
         }
 
         .font-toggle {
@@ -425,6 +426,7 @@
             justify-content: center;
             padding: 0 8px;
             transition: background-color .15s ease, transform .05s ease;
+            font-family: var(--gowun-dodum) !important; 
         }
         .font-btn:active{ transform: scale(0.98); }
         .font-btn.active{
@@ -440,7 +442,6 @@
             font-size: 1.1em;
         }
 
-        /* 📌 1. 입력 창(Input/Textarea/Select) 글씨 크기 및 크기 확대 */
         .form-group input[type="text"],
         .form-group input[type="email"],
         .form-group input[type="password"],
@@ -449,7 +450,7 @@
             width: 100%;
             padding: 12px;
             font-size: 1.1em;
-            font-family: var(--gowun-dodum) !important;
+            font-family: var(--gowun-dodum); 
             background-color: var(--dial-color);
             color: var(--dark-wood);
             border: 2px solid var(--panel-bg);
@@ -457,18 +458,16 @@
             box-sizing: border-box;
         }
 
-        /* 📌 2. 제어판 버튼 스타일 */
         .center-buttons {
             display: flex;
             flex-wrap: wrap;
-            /* 🐛 [수정]: 버튼 그룹을 수평 중앙에 위치시킴 */
             justify-content: center; 
             gap: 10px;
             margin-top: 15px;
-            /* width: auto가 적용된 버튼들을 중앙에 모으기 위해 */
             align-self: center; 
         }
         
+        /* 🌟 [확인/유지] QR/HOME/BACK 버튼 폰트 통일 */
         .center-buttons button {
             flex-grow: 0;
             width: auto;
@@ -479,12 +478,12 @@
             border: 2px solid var(--panel-bg);
             border-radius: 8px;
             font-size: 0.9em;
-            font-family: var(--gowun-dodum) !important;
+            /* 고운 돋움체 적용 (QR, HOME, BACK) */
+            font-family: var(--gowun-dodum) !important; 
             font-weight: normal; 
             cursor: pointer;
         }
         
-        /* 폼 내의 기본 버튼에도 동일한 스타일 적용 (PIN 입력 버튼, 사연 보내기, 채널 생성 버튼 등) */
         .main-content button[type="submit"],
         .modal-button {
             padding: 10px 20px;
@@ -505,6 +504,7 @@
             margin-right: auto;
             
             box-sizing: border-box;
+            font-family: var(--gowun-dodum) !important; 
         }
         .modal-button { 
             width: 100%;
@@ -519,7 +519,6 @@
             background-color: #331f1d;
         }
         
-        /* '곡 검색' 버튼에 대한 스타일 조정 */
         #writeForm button[type="button"] {
             padding: 8px 15px;
             font-size: 1.1em;
@@ -531,6 +530,7 @@
             border: none;
             margin-top: 5px; 
             font-weight: normal; 
+            font-family: var(--gowun-dodum) !important;
         }
 
         .qr-size {
@@ -551,7 +551,7 @@
             width: min(92vw, 420px);
             text-align: center;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            font-family: var(--gowun-dodum) !important;
+            font-family: var(--gowun-dodum); 
         }
 
         .modal-overlay {
@@ -580,7 +580,7 @@
             font-size: 1.2em;
             display: block;
             padding: 5px 0;
-            font-family: var(--gowun-dodum) !important;
+            font-family: var(--gowun-dodum); 
             font-weight: normal; 
         }
 
@@ -621,6 +621,7 @@
             box-sizing: border-box;
             line-height: 1.2;
             font-size: 0.85em;
+            font-family: var(--gowun-dodum) !important;
         }
         .radio-dial:hover { background-color: #fff8e8; }
         .dummy-dial-label {
@@ -648,7 +649,7 @@
             line-height: 30px;
             font-size: 0.9em;
             color: #FFD700;
-            font-family: 'Courier New', monospace !important;
+            font-family: var(--retro-font) !important;
             box-shadow: inset 0 0 5px rgba(255, 215, 0, 0.5);
             overflow: hidden;
         }
@@ -670,12 +671,11 @@
             border: 1px solid #ddd;
             padding: 10px 8px;
             text-align: left;
-            font-family: var(--gowun-dodum) !important;
+            font-family: var(--gowun-dodum); 
         }
         .story-table td[title] { cursor: help; }
 
         .button-group button {
-            /* 일괄 저장 버튼에만 적용 */
             background-color: var(--dark-wood) !important;
             color: white;
             border: none;
@@ -687,6 +687,7 @@
             transition: background-color 0.1s;
             font-size: 1.1em;
             font-weight: normal; 
+            font-family: var(--gowun-dodum);
         }
         .button-group button:hover {
             background-color: #331f1d !important;
@@ -788,7 +789,7 @@
     
     const mainContent = document.getElementById('mainContent');
     const frequencyDisplay = document.getElementById('frequencyDisplay');
-    const radioScreen = document.getElementById('radioScreen'); // radio-screen 요소 가져오기
+    const radioScreen = document.getElementById('radioScreen');
 
     let currentChannelPin = null;
     let currentChannelName = null;
@@ -882,7 +883,7 @@
         const el = document.getElementById('scrollingText');
         if(!el) return;
 
-        let elapsed = 0; // 초
+        let elapsed = 0; 
         if (preserveProgress && el.getAnimations) {
             const anim = el.getAnimations()[0];
             if (anim && typeof anim.currentTime === 'number') {
@@ -895,7 +896,7 @@
 
         const dur = getComputedStyle(el).getPropertyValue('--scrollDur') || '57s';
         el.style.animation = 'none';
-        void el.offsetWidth; // reflow
+        void el.offsetWidth; 
         el.style.animation = `scrollUp ${dur.trim()} linear forwards`;
         el.style.animationDelay = (elapsed > 0) ? `${-elapsed}s` : '0s';
     }
@@ -1152,8 +1153,8 @@
         qrcodeElement.innerHTML = '';
         new QRCode(qrcodeElement, {
             text: url,
-            width: 160, // 🐛 [권장 E] QR 코드 크기
-            height: 160, // 🐛 [권장 E] QR 코드 크기
+            width: 160,
+            height: 160,
             colorDark : "#000000",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
