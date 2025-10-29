@@ -737,17 +737,17 @@
 
                 <div class="dial-control">
                     <div class="radio-dial" onclick="loadContent('write')">사연<br>쓰기</div>
-                    <div class="dummy-dial-label">VOLUME</div>
+                    <div class="dummy-dial-label">WRITING</div>
                 </div>
 
                 <div class="dial-button-group">
                     <div class="dial-control">
                         <div class="radio-dial" onclick="loadContent('write')">사연<br>쓰기</div>
-                        <div class="dummy-dial-label">VOLUME</div>
+                        <div class="dummy-dial-label">WRITING</div>
                     </div>
                     <div class="dial-control">
                         <div class="radio-dial" onclick="loadContent('manage_menu')">사연<br>관리</div>
-                        <div class="dummy-dial-label">TUNING</div>
+                        <div class="dummy-dial-label">MANAGING</div>
                     </div>
                 </div>
 
@@ -927,9 +927,9 @@
             case 'welcome':
                 html = `
                     <h2 class="content-title">📻 라디오는 사연을 싣고 💌</h2>
-                    <p>아래 다이얼을 눌러 원하는 기능을 선택하세요!</p>
+                    <p>아래 다이얼을 눌러 원하는 기능을 선택하세요!</p></p>
                     <p>📝 사연 쓰기 : 사연을 적고 신청곡과 함께 보낼 수 있어요.</p>
-                    <p>🔑 사연 관리 : 라디오를 개설하고 사연을 불러올 수 있어요.</p>
+                    <p>🔑 사연 관리 : 채널을를 개설하고 사연을 불러올 수 있어요.</p>
                 `;
                 break;
 
@@ -1083,7 +1083,7 @@
                             <label for="managerPassword">비밀번호 (4자리):</label>
                             <input type="password" id="managerPassword" maxlength="4" required>
                         </div>
-                        <button type="submit">로그인 및 듣기 메뉴</button>
+                        <button type="submit">로그인 및 사연 듣기</button>
                     </form>
                     <p id="manageLoginStatus" style="margin-top: 15px; color: var(--error-color); font-weight: bold;"></p>
                 `;
